@@ -1,0 +1,225 @@
+SQS - Simple Queue Service
+  What is SQS?
+    A message queue service.
+    Enables web service applications to quickly and reliably queue messages that  one component in the application generates for another component to consume.
+    A queue is a temporary repository for messages awaiting processing.
+
+  Examples
+    1. Meme website: Upload an image, store photo in S3, trigger lambda function sends data to SQS, EC2 pull SQS for tasks to complete, upload completed meme in S3.
+
+    If you lose an EC2 image before it has completed, you won't lose the job because it will still be in the queue. 
+
+    2. Travel Website: Searching for flights, EC2 (web server) sends data to SQS, EC2 (app server) pulls sqs for search jobs.
+
+    SQS is used for pull based services, SNS is used for push based services.
+
+    Jobs are not lost because of the visibility timeout, when a job is pulled it is marked as invisible. If the job has not been completed by the timeout, it will reappear.
+
+    We remove dependency between two parts of the architecture, this is called decoupling your infrastructure.
+
+  SQS features
+    1. Decouple Application Components
+      Deouple the components of an application so they run independently, easing message management between components.
+    2. Store Messages
+      Any component of a dsitributed application can store messages in the queue. Messages can contain up to 256 KB of text in any format.
+    3. Retrieve Messages
+      AAny componeent can later retrieve the messages programmatically using the Amazon SQS API.
+
+  A Buffer Between Componenets
+    A buffer between the compoenent receiving the data for processing, and the componeent producing and saving the data.
+
+  Resolves scheduling issues
+    The queue resolves issues that arise if the producer is producing work faster than the consumer can process it, or if the producer or consumer are only intermitteently connected to the network.
+
+  SQS Key Facts
+    Pull-Based, not push based.
+    Messages are 256 KB in size.
+    Text data: XML, JSON, and unformatted.
+    Guaranteee: Messages will be processed at least once.
+    Up to 14 days: Messages can be kept in the queue from one minute to 14 days. Default is 4 days
+
+  Exam tips
+    Distributed message queueing system
+    Allows us to decouple the componenets of an application so that they are independent.
+    Pull-based, not push-based.
+
+  Understanding SQS Queue Types
+    What types are available?
+      Standard Queues (Default): Best-effort Ordering
+        Unlimited Transactions: Nearly-Unlimited number of transactions per second
+        Guarantee: Guarantees that a message is delivered at least once.
+        Best-Effort Ordering: Standard queues provide best-effort ordering which ensures that messages are generally delivered in the same order as they are sent.
+        Occasionally (because of the highlly-distributed architecture that allows high throughput), more than one copy of a message might be delivered out of order.
+      FIFO: First in, first out: Order is strictly preserved
+        First-in-first-out Delivery: THe order in which messages are sent and received is strictly preserved.
+        Exactly-Once Processing: A message is delivered once and remains available until a consumer processes and deletes it. Duplicates are not introduced.\
+        300 TPS Limit: FIFO queues are limted to 300 transactions per second, but have all the capabilities of standard queues.
+        Great for banking applications.
+
+    Exam Tips:
+      Standard
+        Best-effort ordering
+        Message delivered at least once.
+        Occasional Duplicates
+        Default
+      FIFO
+        First-in-first-out message order is strictly preserved.
+        Messages are delivered once
+        No Duplicates
+        Good for banking transactions which need to happen in a strict order.
+
+  SQS Settings
+    Visibility Timeout (30s default): The amount of time that the message is invisible in the SQS queue after a reader picks upt that message.
+      Ideally, the job will be processed before the visibilty time out expires, and the message will then be deleted from the queue.
+      However, if the job is not processed within that time. The message will become visible again and another reader will process it. (Opportunity for duplicates)
+      Increase the visibility fi needed, maximum is 12 hours. 
+    Short Polling vs Long Polling
+      Short Polling: Returns a response immediately even if the message queue being polled is empty
+        This can result ina  lot of empty responses if nothing is in the queue.
+        You will still pay for these responses
+      Long Polling: Periodically polls the queue
+        Doesn't return a response until a message arrivs in the message queue or the long poll times out
+        Can save money!
+        Long polling is generally preferable to short polling.
+
+    Exam Tips
+      Visibility Timeout
+      Short Polling: A response is returned immediately even if no messages are in the queue. A cost per response.
+      Long Polling: Periodically polls the queue and only returns a response when a message is in the queue or the timeout is reached. Most effective option.
+
+  SQS Delay Queues & Managing Large Messages
+    SQS Delay Queues - postpone delivery of new messages
+      Postpone dleivery of new messages to a queue for a number of seconds
+      Message sent to the delay queue remain invisible to consumers for the duration of the delay period.
+      Default delay is 0 seconds, maximum is 900
+      For standard queues, changing the setting doesn't affect the dealy of messages already in the queue, only new messages.
+      For FIFO queues, this affects the delay of messages already in the queue.
+
+      When should you use a delay queue?
+        Large distributed applications which may need to introduce a delay in processing.
+        You need to apply a delay to an entire queue of messages.
+        Adding a delay of a few seconds to allow for updates to your sales and stock control databases before sending a notification to a consumer confirming an online transaction
+
+    Managing Large SQS Messages
+      Best Practive for Managing Large SQS Messages Using S3  
+        For large SQS messages - 256KB up to 2GB in size
+        Use S3 to store the messages
+        Use Amazon SQS Extended Client Library for Java to manage them
+        You'll also need the AWS SDK for Java - provides an API for S3 bucket and object operations
+
+        Amazon SQS Extended Client Library for Java
+          Specify that messages are always stored in Amazon S3 OR only messages > 256KB
+          Send a message which references a message object stored in S3
+          Get a message object from S3
+          Delete a message object from S3
+
+      You need:
+        AWS SDK for Java
+        SQS Extended Client Library for Java
+        An S3 bucket
+
+      Can't Use:
+        AWS CLI
+        AWS Management Console / SQS Console
+        SQS API
+        Any other AWS SDK
+
+  Exam Tips
+    SQS Delay Queue
+      Postpone delivery of new messages
+      Messages in Delay Queue remain invisible for the duration of the delay period (0-900s)
+      Large distributed applications which may need to introduce a delay in processing
+    Managine Large Messages
+      Store large messges in S3
+      AWS SDK for JavaAmazon SQS Extended Client Library for Javas
+
+SNS - Simple Notification Services
+  SNS - A web service that makes it easy to set up, operate, and send notifications from the Cloud.
+  Messages sent from an application can be immeditately delivered to subscribers or other applications.
+
+  A notifications service.
+
+  Push Notifications: To devices (Apple, Google, Fire OS, Windows, Android)
+  SMS and Email: SMS Text message or email to Amazon Simple Quue Service (SQS) or any HTTP endpoint
+  Lambda: Trigger Lambda functions to process the infromation in the message, publish to another SNS topic, or send the message to another AWS service.
+
+  How does it work?
+    A pub-sub model. Publish and Subscribe.
+      Applications PUBLISH or PUSH messages to a topic
+      Subscribers RECEIVE messages from a topic
+
+    A Pub-Sub Model 
+      Application -> SNS -> Topic -> Subscribers
+
+    Notifications are delivered using a push mechanism that eliminates the need to periodically check or poll for new information and updates
+
+  What is a topic?
+    It's an access point, allowing recipients to subscribe to, and receive identical copies of the same notification. SNS delivers appropriately-formatted copies of the message to each subscriber. 
+
+  What about durability?
+    Durable storage: Prevents messages from being lost
+    All messages published to Amazon SNS are stored redundantly across multiple Availability Zones.
+
+  SNS Benefits
+    Instantaneous: Instaneous, push-based delivery (no polling)
+    Simple: Simple APIs and easy integration with applications
+    Flexible: Flexible message delivery over multiple transport protocols.
+    Inexpensive: Inexpensive, pay as you go model with no up-front costs
+    Easy to Configure: Web-based AWS Management Console offers the simplicity of a point-and-click interface
+    Managed Service: With all the high availability and durability features needed for a production environment
+
+  Selecting the right Solution:
+    You might be asked to select the right solution for a given scenario: SNS vs SQS
+
+    SNS
+      Messaging service
+      SNS is push based
+      Think push notifications
+    SQS
+      Messaging service, held in a queue instead of being delivered.
+      SQS is pull based
+      Think polling the queue for messages.
+
+  SNS Exam Tips
+    Notificaitons: Scalable and highlly available notfication service which allows us ot send push notifications from the cloud.
+    Message formats: Sms text message, email. Amazon SQS, or any HTTP endpoint.
+    Pub-Sub: Push notification vs pull or poll mechanism
+    Push = SNS
+    Pull = SQS
+
+  SES vs SNS
+    Amazon SES (Simple Email Service)
+      Scalable and Highly Available Email
+        Designed to hel pmarketing teams and application developers send marketing, notification, and transactional emails to their customers using a pay-as-you-go model.
+        Send and Receive Email: Can also be used to receive emails with incoming mails delivered to an S3 bucket.
+        Trigger Lambda and SNS
+
+      Use Cases:
+        Automated Emails: Notification that htere is a new post in a discussion forum that you moderate.
+        Online Purchases: Purchase confirmations, shipping notifications, and order status updates
+        Marketing Emails: Marketing communications, advertisements, newsletters, special offers, etcs
+
+  SES: 
+    Email only
+    Can trigger a Lambda funciton or SNS notification
+    Can be used for both incoming and outgoing email
+    An email address is all that is required to start sending messages.
+
+  SNS
+    Pub/sub messaging service formats include: SMS, HTTP, SQS, email
+    Can trigger a Lambda function
+    Can fanout messages to a large number of recipients (replciate and push messages to multiple endpoints and formats)
+    Consumers must subscribe to a topic to receive the notifications
+
+  SES Exam Tip:
+    SES is for email only
+    SES can send and receive emails
+    Not Subscription based
+  SNS Exam Tips
+    Multiple formats
+    Push notifications
+    Not for receiving
+    Pub/Sub model
+    Fanout
+
+  

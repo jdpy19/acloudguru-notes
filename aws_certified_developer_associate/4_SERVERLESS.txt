@@ -1,0 +1,352 @@
+ Serverless 101
+  A Brief History of Cloud
+    Don't like hardward: Expensive, cumbersome, complicated
+    Data Centre: Had to talk to people, still complicated to get configured, slow working with people.
+    EC2 Launches in 2006
+    IAAS: Configure from the command line, but something could go wrong (offline, hacked, etc.)
+    Elastic Beanstalk
+    PAAS: Deploy code for you
+    Containers: Still need to be deployed to a server and have housekeeping challenges.
+    Serverless: Lambda, run without provisioned servers.
+
+Lambda
+  What is Lambda?
+    Data Centres
+    Hardware
+    Assembly Code/Protocols
+    High Level Languages
+    Operating System
+    Application Layer/AWS APIs
+    AWS Lambda (Ultimate Abstraction Layer)
+
+  AWS Lambda is a compute service where you can upload your code and create a lambda function.
+  AWS Lambda takes care of provisioning and managing the servers that you use to run the code.
+  You don't have to worry about operating systems, patching, scaling, etc. 
+  You can use Lambda in the following ways:
+    As an event-driven compute service where AWS Lambda runs your code in response to events.
+    These events could be changes to data in an S3 Bucket or an Amazon DynamoDB table
+
+    As a compute service to run your code in response to HTTP requests using Amazon API Gateway
+    or API calls made using AWS SDKs. This is what is used at A Cloud Guru
+
+  What Languages?
+    Node.js
+    Java
+    Python
+    C#
+    Go
+
+  How is Lambda Priced?
+    Number of requests
+      First 1 million requests are free. $0.20 per 1 million requests thereafter.
+
+  Why is Lambda Cool?
+    NO SERVERS!
+    Continuous Scaling
+
+  Exam Tips
+    Lambda scales out (not up) automatically
+    Lambda functions are independent, 1 event = 1 function
+    Lambda is Serverless
+    Know what services are serverless
+
+    Lambda functions can trigger other lambda functions, 1 event can = x functions if functions trigger other functions
+
+    Archictectures can get extremely complicated, AWS X-ray allows you to debug what is happening
+
+    Lambda can do things globally, you can use it to back up S3 buckets to other S3 buckets etc
+    Know your triggers!
+
+API Gateway
+  An API is an application programming interface.
+
+  Types of APIs
+    REST APIs (Representational State Transfer) - (70% of the internet, pretty much what everyone uses)
+    SOAP APIs (Simple Object Access Protocol) - Older, uses XML
+
+  Amazon API Gateway
+    A Fully managed service that makes it easy for developers to publish, maintain, monitor, and secure APIs at any scale.
+    With a few clicks in the AWS Management Console, you can create an api that acts as a front door for 
+    applications to access data, business logic, or functionality from your back-end services.
+
+    Such as applications running on EC2, code running on Lambda or any web applications
+
+  What can API Gateway do?
+    Expose HTTPS endpoints to define a RESTful API
+    Serverless-ly connect to services like Lambda & DynamoDB
+    Send each API endpoint to a different target
+    Scale effortlessly
+    Track and control usage by API key
+    Throttle requests to prevent attacks
+    Connect to CloudWatch to log all requests for monitoring
+    Maintain multiple versions of the api
+
+  How do I configure API gateway?
+    Define an API (container)
+    Define Resources and nested resources (URL paths)
+    For each RESOURCE:
+      Select supported http methods
+      Set security
+      Choose targets
+      Set request and response transformations
+
+    Deploy API to stage
+      Uses api gateway domain by default
+      Can use custom domain
+      Now supports AWS certificate manager: free SSL/TLS certs!
+
+  What is API Caching?
+    You can enable API Caching in Amazon API Gateway to cache your endpoint's response.
+    With caching, you can reduce the number of calls made to your endpoint and also improve the latency
+    of the requests to your API. 
+
+    When you enable caching for a stage, API gateway caches responses from your endpoint for a specified time-to-live (TTL) period, in seconds.
+    API Gateway then responds to the request by looking up the endpoint response from the cache instead of making a request to your endpoint.
+
+  Same Origin Policy
+    In computing, the same-origin policy is an important concept in the web applicaiton security model.
+    Under the policy, a web browser permits scripts contained in a first web page to access data in a second web page,
+    but only if both web pages have the same origin.
+
+    This is done to prevent Cross-Site Scripting (XSS) attacks.
+      Enforced by web browsers.
+      Ignored by tools like PostMan and curl.
+
+  Cross Origin Resource Sharing (CORS) is one way the server at the other end can relax the same-origin policy.
+
+  Cross origin resource sharing is a mechanism that allows restricted resources (fonts) on a web page to be reqeuested
+  from another domain outside the domain from which the first resource was served.
+
+  Browser makes an HTTP OPTIONS call for a URL
+    OPTIONS is an HTTP method like GET, PUT, and PostMan
+  Server returns a response that says:
+    These other domains are approved to GET this URL.
+  Error - 'Origin policy cannot be read at the remote resource?" - You need to enable CORS on API gateway.
+
+Version Control with Lambda
+  Versioning: When you use versioning in AWS Lambda, you can publish one or more versions of your lambda function.
+  As a result, you can work with different variations of your lambda function in your development workflow.
+    Such as development, beta, and production
+
+  Each Lambda version has a unique amazon resource name (ARN). After you publish a version, it is immutable.
+
+  AWS Lambda maintians your latest function code in the $LATEST version. When you update your function code,
+  AWS Lambda replaces the code in the $LATEST version of the lambda function.
+
+  Qualified/Unqualified ARNs
+    You can refer to this function using its ARN. There are two ARNS associated with the initial version:
+      Qualified ARN - The function ARN with the version suffix
+      Unqualified ARN - The function ARN without the version suffix
+
+  Alias
+    After initially creating a Lambda function, you can publish a version 1 of it.
+    By creating an alias named PROD that points to version 1, you can now use the PROD alias to invoke version 1 of the lambda function.
+
+    Now, you can update the code in the $LATEST version with all of your improvements, and then publish another stable and improved version
+    You can promote version 2 to production by remapping the PROD alias so that iti points to version 2. 
+    If you find something wrong, you can easily roll the production version to version 1 by remapping the PROD alias so that it points to version 1. 
+
+Lambda Versions
+  When you create a Lambda function, there is only one version: $LATEST
+  When you upload a new version of the code to Lambda, this version will become $LATEST
+  You can create multiple versions of your function code and use aliases to reference the version you want to use as part of the ARN
+  e.g. INa a development environement you might want to maintain a few versions of the same function as you develop and test your code
+  An alias is like a pointer to a specific version of the function code
+
+  Aliases are like a pointer 
+
+  If you upload the new code to Lambda, the new code becomes the $LATEST version
+  If you application uses an alias, remember to update the ARN that you are using if you want to use the new code
+
+  Lambda Versions Exam Tips
+    $Latest is always the last version of code you puloaded to lambda
+    Use Lambda versioning and Aliases to point your applications to a specific version if you don't want to use $LATeST
+    If your application uses an alias, instead of $LATEST remember that it will not automatically use the new code when you upload it
+
+Lambda Concurrent Executions Limit
+  Concurrent Executions
+    Not necessary to memorize lots of limits for the exam
+    Be aware that there is a concurrent execution limit for Lambda
+    Safety feature to limit the number of concurrent executions across all function in a given region per account
+
+    Default is 1000 per region
+    TooManyRequestsException
+    HTTP Status Code: 429
+    Request throughput limit exceeded
+
+    If you have many Lambda functions running in the same region and you suddenly start seeing new invocation requests being rejected, then you may have hit your limit
+    ACG's daily usage is around 6.5m Lambda Invocations per day in us-east-1
+    Request an increase on this limit by submitting a request to the AWS Support Center
+    Reserved Concurrency guarantees that a set number of executions which will always be available for your critical function, however this also acts as a limit
+
+Lambda and VPCs
+  Enabling Lambda to Access Your VPC Resources
+    Lambda -> Private VPC (Private subnet [EC2, RDS])
+
+    Some use cases require Lambda to access resources which are inside a private VPC
+    e.g. Read or write to an RDS database or shut down an EC2 instance
+
+    To enable this, you need to allow the function to connect to the private subnet
+    Lambda needs the following VPC Configuration information so that it can connect to the VPC:
+      Private Subnet ID
+      Security Group ID (with required access)
+      Lambda uses this information to set up ENIs using an available IP address from your private subnet.
+
+    You add VPC information to your Lambda function config using the vpc-config parameter
+      --vpc-config SubnetIds=subnet-1122aabb,SecurityGroupIds=sg-12345
+
+  Exam Tips:
+    It is possible to enable Lambda to access resources which are inside a private VPC.
+    Provide VPC config to the function - private subnet ID, security group ID
+
+X-Ray Configuration
+  The AWS X-Ray SDK sends the data to the X-Ray daemon which buffers segments in a queue and uploads them to X-Ray in batches.
+  You need both the X-Ray SDK and the X-Ray daemon on your systems.
+
+  High Level Requirements
+    X-Ray SDK
+    X-Ray dameon
+
+  You use the SDk to instrument your application to send the required data
+
+  High Level Configuration Steps\
+    1. ON Premises & EC2 instances: Install the X-Ray daemon on your EC2 instance or on-premises server
+    2. Elastic Beanstalk: Install the X-ray daemon on the EC2 instances inside your Elastic Beanstalk Environment
+    3. Elastic Container Service: Install the X-Ray daemon in ints own Docker container on your ECS cluster alongsied your app.
+
+  Annotations & Indexing:
+  Annotations: When instrumenting your application, you can record additioanl information about requests by using annotations
+  Key-value pairs: Annotations are simple key-value pairs that are indexed for use with filter expressions, so that you can search for traces that contain specific data and group related traces together in the console
+
+  Exam Tips
+    X-Ray integrates with many AWS Services
+    You can also instrument your own applications to send data to X-Ray
+    Applciations can be running on EC2, Elastic Beanstalk environements, on-premises systems and ECS
+    For ECS, run the X-Ray daemon in it's own Docker image, running alongside your application
+
+    You'll need 
+      1. X-Ray SDK
+      2. X-Ray Daemon
+      3. Insturment your applicaiton using the SDK to send the reuiqred data to X-Ray
+
+  Annotations: Add specific information as user defined key-value pairs to your X-Ray data.
+
+Advanced API Gateway
+  Importing APIs into API Gateway using Definition Files
+  Supported Protocols: OpenAPI, formerly known as Swagger, is supported
+  Create New and Update Existing APIs: You can use an OpenAPI definition file to create a new API or update an existing API
+
+  You can configure API Gateway as a SOAP web service passthrough
+  You can also use API Gateway to transform the XML response to JSON
+
+  Exam Tips: 
+    You can import APIs using external definition files, OpenAPI formerly known as Swagger
+    When dealing with legacy applications which use SOAP you can configure API Gateway as a SOAP web service passthrough, or you can use API gateway to conver the XML response to JSON
+
+API Gateway Caching & Throttling
+  Caching
+    Caches your endpoint response: This reduces the number of calls made to your endpoint and can also imporve the latecny for requests to your API
+    TTL: When you enable caching, API Gateway caches responses from your endpoint for a specified time-to-live (TTL) period in seconds. Default = 300s
+    API Gateway Returns the Cached Response: API Gateway then responds to new requests by looking up the response from the cache, instead of making a new request to your application.
+
+    API Gateway can help you improve the performance of your APIs, and the latency your end users experience, by caching the outptu of API calls to avoid calling your backend application every time.
+
+  Throttling
+    The purpose of API Gateway throttlilng is to prevent your API from being ovewhelmed by too many requests.
+    Default Limits: By default, API Gateway limits the steady-state request rate to 10000 requests per second, per region
+    Concurrent Requests: The maximum concurrent requests is 5000 requests across all APIs per Region  
+
+    You can increase on these limits
+
+    429 Error: If you exceed them, you will receive this error
+
+    If limits are exceeded, the requests will be processed after the first 5000
+
+  Exam Tips
+    Improves performance: Caching
+    TTL: REsponses are acahced for a TTL period (default = 300s)
+    Redueces the number of API Calls: Reduces latency experienced by the users
+
+    Throttling: Default limits 10000 rps and 5000 concurrent requests
+    429 error, too many requests
+    Uses throttlilng to prevent your API from being overwhelemed by requests
+
+Serverless Summary
+  Serverless 101
+    Serverless: Enables you to build scalable applications quickly without managing any servers
+    Low Cost: Serverless applications are event-driven and you are only charged when your code is executed
+    AWS Handles the Heavy Lifting: You can focus on writing code and building your application instead of configuring servers.
+
+  Lambda
+    Extremely Cost Effective: Pay only when your code executes
+    Continuous Scaling: Lambda Scales automatically
+    Event-Driven: Lambda functions are triggered by an event or action
+    Independent: Lambda functions are independent. Each event will trigger a single function
+    Serverless Technology: Lambda, API Gateway, DynamoDB, S3, SNS, SQS
+    Lambda Triggers: Be aware of the services that can trigger a Lambda function.
+      DynamoDB
+      Kinesis
+      SQS
+      Application Load Balancer
+      Alexa 
+      CloudFront
+      S3
+      SNS
+      SES
+      CloudFormation
+      CloudWatch
+      CodeCommit
+      CodePipeline
+  
+  API Gateway: An API is like the front door to your application
+    Provides an endpoint to your applications running in AWS
+    Serverless: Low cost and scales automatically
+    Throttling: You can throttle API Gateway to prevent your application from being overloaded by too many requests.
+    CloudWatch: Everything is logged to CloudWatch. API Calls, latencies, errors
+
+  Serverless Website:
+    Lambda: Run Python
+    API Gateway: Trigger Lambda
+    S3: Host website
+
+  Version Control:
+    $Latest is always the latest
+    Versioning and Aliases to point to a specific version or alias
+
+  Concurrent Limit: 1000 concurrent executions per second by default. If you hit the limit, you will see a 429 HTTP status code.
+    You can request to raise the limit through AWS Support
+    Reserved concurrency guarantees a set number of concurrent executions are always available to a critical function
+  
+  Lambda & VPC
+    You can enable Lambda to access resources in a private VPC.
+      Provide VPC Config information to the functions
+        Private subnet ID, and security group ID
+      Lambda uses the VPC information
+        Lamda configures an ENI, using an IP from the private subnet CIDR range.
+      Security Group 
+        Then allows your function to access resources in VPC
+  
+  Step Functions:
+    Visualize and Orchestrate
+    Automate: Trigger and track each step of the state machine or workflow. The output is often the input to the next
+    Logging
+
+  X-Ray: Helps developers analyze and debug applications
+    Service Map: Visual representation of your applications
+    X-Ray Agent and SDK must be installed on your ec2 instances
+    Integrated with AWS Services
+    EC2, On-Prem, ECS, elastic Beanstalk
+    ECS: Run daemon alongside your application in its own image
+    Annotations: User defined key-value pairs added to your X-Ray data
+
+  API Gateway Caching: Improves the performance by caching the output of API calls
+  TTL: Responses are cached for a TTL period. The default TTL is 300 seconds
+  Reduces the Number of API Calls
+
+  API Gateway Throttling: 10000 rps and 5000 concurrent requests per region. 429 error if exceeded
+    Prevent the API from being overwhelemed by too many requests
+
+  Advanced API Gateway: Import apis from Swagger also known as OpenAPI
+    When dealing with legacy SOAP applications, you can use API Gateway as a web service passthrough or you can use API gateway to convert the XML response to JSON
+
+Triggering Lambda from SQS Queue

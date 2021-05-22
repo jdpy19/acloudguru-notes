@@ -1,0 +1,46 @@
+Exam Blueprint
+Domain 1: Deployment, 22%
+Domain 2: Security, 26%
+Domain 3: Development with AWS Services, 30%
+Domain 4: Refactoring, 10%
+Domain 5: Monitoring and Troubleshooting, 12%
+
+Exam Guide: https://d1.awsstatic.com/training-and-certification/docs-dev-associate/AWS_Certified_Developer_Associate-Exam_Guide_EN_1.4.pdf
+
+130 minutes, 65 questions, results immediately, $150, valid for 2 years
+
+IDENTITY ACCESS MANAGEMENT: IAM 101
+
+What is IAM? 
+  Allows you to manage users and their level of access to the AWS console. 
+
+What does IAM give you?
+  Centralized control of your aws account
+  Shared access to your aws account
+  Granular permissions
+  Identity Federation (Active Directory, Facebook, LInkedin, etc.)
+  Multifactor Authentication
+  Provides temporary access for users/devices and services, as necessary
+  Allows you to set up a password rotation policy
+  Integrates with AWS services
+  Supports PCI DSS Compliances
+
+Critical Terms
+  Users - End Users (people)
+  Groups - A collection of users under one set of permissions
+  Roles - Create a role and assign them to AWS resources
+  Policies - A document that defines one (or more) permissions, you can attach a policy to a user, group or role
+
+First Lab: IAM 
+* Create Users
+* Create Groups
+* Create Policies
+* Apply Policies
+
+Testing IAM Policy Permissions
+  IAM Policy Simulator
+    Test the effects of IAM policies before committing them to production.
+    Validate that the policy works as expected
+    Test policies already attached to existing users - great for troubleshooting an issue which you suspect is IAM related.
+    https://policysim.aws.amazon.com
+

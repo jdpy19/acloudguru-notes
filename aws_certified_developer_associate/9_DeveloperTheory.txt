@@ -1,0 +1,87 @@
+What is CI/CD?
+
+CodeCommit ~ Git Repository
+
+CodeDeploy 101
+  What is CodeDeploy?
+    Automated Deployment
+      EC2 Instances, on-premises & Lambda
+        Quickly release new features
+        Avoid downtime during deployments
+        Avoid the risks associated with manual processes
+
+  CodeDeploy Deployment Approaches
+    In-Place: The application is stopped on each instance and the new release is installed. Also known as Rolling Update
+      Capacity is reduced during the deployment
+      Lambda is not supported
+      Rolling back involves a re-deployment
+      Great when deploying in the first time
+    Blue/green: New instances are provisioned and the new release is installed on the new instances. Blue represents the active deployment, green is the new release.
+      Safest option
+      No capacity reduction
+      Green instances can be created ahead of time
+      Easy to switch between old and new
+      You pay for 2 environments until you terminate the old servers
+
+  CodeDeploy AppSpec File
+    Configuration File: Defines the paramteres to be used during a CodeDeploy deployment
+    EC2: For EC2 and on-prem, YAML only
+    Lambda: YAML and JSON supported
+
+    Version: Reserved for future use, currently 0.0
+    OS: The operating sytem
+    Files: the location of any application files that need to be copied and where they should be copied to
+    Hooks: Scripts which need to run at set points in the deployment life cycle, have a specifc run order
+
+    Script Examples:
+      UZip Files: Unzip application files
+      Run Tests
+      Deal With Load Balancing: De-register, re-register instances with a load balancer
+
+    Typical Folder Setup:
+      appspec.yml
+      /Scripts
+      /Config
+      /Source
+
+  CodeDeploy Lifecycle Event Hooks
+    Run in a specific order
+
+    Phase 1
+      De-register instances from a Load balancer
+    Phase 2
+      Nuts and bolts of the application deployment
+    Phase 3
+      Re-register instances with load balancer.
+      
+CloudFormation and SAM
+  Serverless Application Model (SAM)
+    CloudFormation for Serverless
+      The Serverless Application Model (SAM) is an extension to CloudFormation used to define serverless applications
+    Simplified Syntax
+      SAM uses a simplified syntax for defining serverless resources: APIs, Lambda functions, DynamoDB tables, etc.
+    SAM CLI
+      Use the SAM CLI to package your deployment code, upload it to S3 and deploy your Serverless application.
+
+    Commands:
+      sam package --template-file ./mytemplate.yml --output-template-file sam-template.yml --s3-bucket s3-bucket-name
+      sam deploy --template-file sam-template.yml --stack-name mystack --capabilities CAPABILITY_IAM
+
+    Exam tips: 
+      SAM = Serverless Application Model
+      Define and provision serverless applications using CloudFormation
+      Has its own api
+      sam package: Pacakges your application and uploads to S3
+      sam deploy: Deploy your serverless app using CloudFormation
+      
+  Demo: 
+    Install the AWS SAM CLI on yuor local machine
+    Create an S3 bucket
+    Use sam package to package our code and save it in S3
+    Use sam deploy to deploy your code from S3
+
+  Nested Stacks
+    Enable re-use of CloudFormation code for common use cases.
+      E.g. standard configuration for a load balancer, web server, or application server.
+      Instead of copying out the code each time, create a standard template for each common use case and reference from within your CloudFormation template.
+

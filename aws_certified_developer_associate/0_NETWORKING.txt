@@ -1,0 +1,38 @@
+AWS Region
+  VPC
+    Internet Gateway
+    
+    Public Subnet:
+      Web Servers: EC2
+      NAT Gateway
+
+      Route Table:
+        10.0.0.0/16 local
+        0.0.0.0/0 igw
+
+    Private Subnet
+      Database Servers
+
+      Route Table:
+      10.0.0.0/16 local
+      0.0.0.0/0 nat-gateway
+  
+
+Example: Carkeepers
+North Virgina
+  VPC-carkeepers: 10.0.0.0/16
+    IGW-carkeepers
+
+    Private-SN-carkeepers: 10.0.1.0/24
+      Route Table: RT-private-carkeepers
+        10.0.0.0/16 local
+
+    Public-SN-carkeepers: 10.0.0.0/24
+      NAT-carkeepers - EIP-carkeepers
+
+      Route Table: RT-public-carkeepers
+        10.0.0.0/16 local
+        0.0.0.0/0 IGW-carkeeper
+
+
+  

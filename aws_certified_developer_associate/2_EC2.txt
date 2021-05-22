@@ -1,0 +1,531 @@
+INTRODUCING EC2: Elastic Compute Cloud
+* Secure, resizable compute capacity in the Cloud
+** LIke a VM, hosted in AWS
+** Designed to make web-scale cloud computing easier for AWS_Certified_Developer_Associate
+** The capacity you want, when you need Integrates
+** You are in complete control of your own instances
+
+Why is it so cool?
+  Game changer. Big change in the industry.
+  Pay only for what you use. Changed the economics of computing.
+  No wasted capacity. Select the capacity that you need right now. Grow and shrink when you need.`
+
+Before EC2 
+  On Prem infrastructure, estimate capacity. Long term investment, 3-5 years.
+  Typically would overspecify to accomodate growth.
+
+Wait minutes, not months!
+
+EC2 Pricing Options
+  On Demand: Pay by the hour or second depending on the type of instance.
+    Flexible: Low cost and flexibility of ec2 without any up-front payment or long-term commitment
+    Short-term: Applications with short-term, spiky, or unpredicatable workloads that cannot be interrupted
+    Testing teh water: Applications being developed or tested on Amazon Ec2 for the first time.
+  Reserved: Reserved capacity for one or three years. up to 72% discount on the hourly charge. Regional.
+    Predictable Usage: Applications with steady state or predictable usage.
+    Specific Capacity Requirements: Applications that require reserved capacity
+    Pay Up front
+    Standard RIs: Up to 72% off on-demand price. 
+    Convertible RIs: Has the option to change to a different reserved instance type of equal or greater vale.
+    Scheduled RIs: Launch within a time window you define. Match your capacity reservation to a preditable recurring schedule that only requires a fraction of a day, week, or month.
+  Spot: Purchase unused capacity at a discount of up to 90%. Prices fluctuate with supply and demand.
+  Dedicated: A physical Ec2 server, dedicated for your use. The most expensive option.
+
+  Savings Plans
+    1. Save up to 72%
+    2. Commit to one or three years to use a specific amount of compute power.
+    3. Super flexible, includes serverless Lambda and Fargate
+
+Exploring EC2 Instance Types
+  1. Hardware - When you launch an instance, the instance type determines the hardware of the host ocmputer used for your instance
+  2. Capabilities - Each instance type offers different compute, memory and storage capabilities and are grouped in instance families
+  3. Application Requirements - Select an instance type based on the requirements of the application you plan to run.
+
+A wide selection - Instance types are optimized to fit different use cases and give you flexibility.
+
+Launching an EC2 Instance
+
+What are EBS Volumes? Elastic Block Store
+  Elastic Block Store: Storage volumes that you can attach to your EC2 instances.
+
+  Think of them as a disk in your laptop or computer. When you launch an EC2, it has at least one EBS as example Amazon Linux.
+
+  Use them the same way you would use any system disk.
+    Create a file system.
+    Run a database.
+    Run an operating system.
+    Store data.
+    Install applications
+  
+  Mission Critical
+    1. Production Workloads: Designed for mission critical workloads
+    2. Highly available: Automatically replicated within a single Availability Zone to portect against hardware failures.
+    3. Scalable: Dynamically increase capacity and change the type of volume with no downtime or performance impact to your live systems.
+
+  Types of EBS:
+    1. General Purpose SSD (GP2): Balance of price and performance.
+      3 IOPS per GiB, up to a maximum of 16000 IPOS per volume
+      gp2 volumes smaller than 1 TB can burst up to 3000 IOPS
+    2. Provisioned IOPS SSD (io1): Performance and most expensive option.
+      If you need more than 16000 IOPS
+      Designed for I/O intensive applications, large databases and latency sensitive operations
+    3. Provisioned IOPS SSD (io2): Latest generation, higher durability and more IOPS per GiB
+      Same price as io1, io1 will probably be decomissioned.
+      500 IOPS per GiB
+      Up to 64000 IOPS
+      99.999% durability instead of 99.9%
+    4. Throughput Optimized HDD (st1): Low-cost HDD volume
+      Baseline throughput of 40MB/s per TB
+      Ability to burst up to 250 MB/s per TB
+      Maximum throughput of 500 MB/s per volume
+      Frequently accessed, throughput-intensive workloads
+      Big Data, data warehouses, ETL, and log processing
+      Cannot be a boot volume
+    5. COLD HDD (SC1): Lowest cost Options
+      Baseline throughput of 12 MB/s per TB
+      Ability to burst up to 80 MB/s per TB
+      Max throughput of 250 MB/s per volume
+      A good choice for colder data requiring fewer scans per day.
+      Good for applications that need the lowest cost and performances is not a factor.
+      Cannot be a boot volume
+
+    IOPS versus Throughput?
+      IOPS:
+        Measures the number of read and write operations per second
+        Important metric for quick transactions, low latency apps, transactional workloads.
+        The ability to action reads and writes very quickly.
+        Choose provisioned IOPS SSD (io1 or io2)
+      Throughput:
+        Measures the number of bits read or written per second (MB/s)
+        Important metric for large datasets, large I/O sizes, complex queries
+        The ability to deal with large datasets
+        Choose Throughput Optimized HDD (st1)
+
+  Elastic Block Store LAB
+    Highly available and scalable storage volumes you can attach to an EC2 instance
+    
+    Encrypted snapshotes: If you create an EBS volume from an encrypted snapshot, then you will get an encrypted volume
+    Unencrypted snapshotes: If you create an EBS volume from an unencrypted snapshot, then you will get an unencrypted volume
+
+  Elastic Load Balancer
+    Simply, helps us balance our load over multiple servers.
+
+  Types of Load Balancers
+    Application Load Balancer: Best suited for load balancing of HTTP and HTTPS traffic. They operate at layer 7 and are application-aware. 
+    They are intelligent and you can create advanced request routing, sending specified requests to specific web servers.
+
+    Network Load Balancer: Best suited for load balancing of TCP traffic where extreme performance is required. Operating at connection level (Layer 4).
+    NLBs are capable of handling millions of requests per second, while maintaining ultra-low latencies.
+
+    Classic Load Balancer: Legacy Elastic load Balancer. You can load balance HTTP/HTTPS and use layer 7-specific features, such as X-Forwarded and sticky sessions.
+    You can also use strict Layer 4 load balancing for applications that rely purely on the TCP protocol.
+
+    If your application stops responding, teh ELB responds with a 504 error.
+      THis means that the application is having issues. This could be either at the web server layer or at the database layer.
+      Identify where the application is failing, and scale it up or out where possible.
+      Think of a Gateway timeout error.
+
+    X-Forwarded-For Header
+      User(124.12.3.231) -> ELB (10.0.0.23) -> EC2 (10.0.0.23). How to get IPV4? X-Forwarded-For header.
+
+    ELB Exam Tips
+      3 Types of load Balancers
+      504 error indicates the gateway has timed out. The application is not responding within the idle timeout period.
+        Troubleshoot the application. Is it the web server or database?
+      If you need the IPV4 address, look for the X-Forwarded-For header.
+
+    ROUTE 53 LAB
+
+    Route 53 Examp Tips
+      Route53 is Amazon's DNS service.
+      Allows you to map your domain names to 
+        Ec2 instances
+        Load Balancers
+        S3 Buckets
+
+      Register domain name
+
+      Manage DNS Record sets
+        Look up DNS record sets:
+        Alias Target: S3 website, ELB, CloudFront, Elastic Beanstalk
+
+      CLI Tips 
+        Least Privilege - Always give your users the minimum amount of access required.
+        Create Groups - Assign your users to groups. Your users will automatically inherit the permissions of the group.
+        Secret Access Key - You only see this once. If you do not save it, you can delete the key pair.
+        Do not use just one access key.
+
+EC2 with S3 Role Lab
+  Grant permissions to entities that you trust, example EC2 access to S3.
+  Go to IAM, create or choose a role.
+
+  Create Role
+    1. Choose AWS Service or another aws account, web identity, etc.
+    2. Attach permissions policies (Minimum required is recommended)
+    3. Attach IAM role to EC2 instance, no need to stop/reboot, but you may need to remove access key.
+
+  EXAM Tips
+  * Roles allow you to not use access key ID's and secret access keys
+  * Roles are preferred form a security perspective
+  * Roles are controlled by policies
+  * You can change a policy on a role and it will take immediate affect
+  * You can attach and detach roles to running EC2 instances without having to stop or terminate these instances
+
+RDS 101
+  What is a relational database?
+    Relational databases are what most of us are all used to. 
+  
+  RDS Types
+    SQL server
+    Oracle
+    MySQL server
+    PostgreSQL
+    Aurora
+    MariaDB
+
+  Non Relational databases
+    database
+      collection=Table
+      document=Row
+      key value pairs=Fields
+
+    Example: JSON/NoSQL
+
+  What is Data Warehousing?
+    Used for business intelligence. 
+    Used to pull in very large and complex data sets. Usually used by management to do queires on data.
+
+  OLTP vs OLAP
+    Online Transaction Processing (OLTP) differs from OLAP online analytics processing (OLAP) in terms of the types of queries you will run.
+
+  What is Elasticache?
+    ElastiCache is a web service that makes it easy to deploy, operate, and scale an in-memory cache in the cloud.
+    The service improves the performance of web applications by allowing you to retrieve information from fast, managed,
+    in-memory caches, instead of relying entirely on slower disk-based databases.
+
+    ElastiCache supports two open-source in-memory caching engines:
+      1. Memcached
+      2. Redis
+
+  AWS Database Types
+    RDS - OLTP
+    DynamoDB - No SQL
+    Redshift - OLAP
+    Elasticache - In Memory Caching: 
+      Memcached
+      Redis
+
+RDS Lab
+  Aurora is not available on free tier.
+  Choose database.
+  Set credentials
+  Choose size
+  Availability & Durability not available on free tier.
+  Connectivity (VPC)
+  Create or choose secruity groups
+
+  EC2 - Bootstrap Script - Runs a root level and executes commands in chronological order.
+    EXAMPLE
+    
+    #!/bin/bash  
+    yum install httpd php php-mysql -y  
+    yum update -y  
+    chkconfig httpd on  
+    service httpd start  
+    echo "<?php phpinfo();?>" > /var/www/html/index.php
+    cd /var/www/html  
+    wget https://s3.amazonaws.com/acloudguru-production/connect.php
+
+  Configure security groups and launch
+
+RDS - Back Ups, Multi-AZ & Read Replicas
+  Automated Backups
+    There are two different types of backups for AWS: Automated Backups and Database snapshotes
+    Automated backups allow you to recover your database to any point in time within a retention period.
+    The retention period can be between one and 35 days. Automated backups will take a daily snapshot and will also 
+    store transaction logs throughout the day. When you do a recovery, AWS will choose the most recent daily back up and then apply
+    transaction logs relevant to that day. This allows you to do a point in time recovery down to a second, within the retention period.
+
+    Automated backups are enabled by default. The backup data is stored in S3 and you get free storage space equal to the size of your database.
+    Backups are taken within a defined window. 
+    During the backup window, storage I/O may be suspended while your data is being backed up and you may experience elevated latency.
+
+  Snapshots
+    DB Snapchosts are done manually (user initiated). They are stored even after you delete the original RDS instance, unlike automated backups.
+
+  Restoring Backups
+    Whenever you restore either an Automatic Backup or a manual snapshot, the restored version of the database will be a new RDS instance with a new DNS endpoint.
+
+  Encryption
+    Encryption at rest is supported for all RDS. Encryption is done using the AWS Key Managment Service.
+    (Check out Security course)
+    Once your RDSD instance is encrypted, the data stored at rest in the underlying storage is encrypted, as are its automated backups, read replicas, and snapshots.
+    At the present time, encrypting an existing DB is not available. To use RDS encryption for an existing database, you must first create a snapshot, make a copy of that snapshot and encrypt the copy.
+
+  What is Multi-AZ RDS?
+    Multi-AZ allows you to have an exact copy of your production database in another AZ. AWS handles the replication for you, 
+    so when your production database is written to, this write will automatically be synchronized to the stand by database.
+
+    In the event of planned database maintenance, DB instance failure, or an AZ failure, RDS will automatically failover to the standby so that database operations can resume quickly without adminsitrative intervention.
+
+    Multi-AZ is for disaster recovery only!!!
+      It is not primarily used for improving performance. For performance improvement, you need read replicas.
+
+    Multi-AZ Databases Available for
+      SQL server
+      Oracle
+      MySQL server
+      PostgreSQL
+      MariaDB
+
+  What is a read replica?
+    Writes to database are go to one database, but there are multiple copies for EC2 instances to read from.
+
+    Read replicas allow you to have a read-only copy of your production database. This is achieved by using Async replication from the primary RDS instance
+    to read replica. You use read replicas primarily for very read-heavy database workloads.
+
+  Read Replica Databases are Available for
+    MySQL
+    PostgreSQL
+    MariaDB
+    Aurora
+
+  Read replicas are used for scaling performance, not for disaster recovery.
+
+  Must have automatic backups turned on in order to deploy a read replica.
+
+  You can have up to 5 read replica copes of any database.
+  You can have read replicas of read replicas, but watch out for latency.
+  Each read replica will have its own DNS end point.
+  You can have read replicas that have multi-AZ
+  You can create read replicas of Multi-AZ source databases.
+  Read replicas can be promoted to be their own databases. This breaks the replication. 
+  You can have a read replica in a second region.
+
+  RDS Backups and Snapshots
+    Types of RDS Backup
+      Database Snapshot: Manual, ad hoc, and user-initiated
+        Provides a snapshot of theh storage volume attached to the DB instance
+      Automated Backup: Enabled by default
+        Creates daily backups or snapshots that run during a backup window that you define. Transaction logs are used to replay transactions.
+
+    RDS Automated Backup: A lot more bang for your buck
+      Point-in-time recovery: recover your database to any point in time within a "retention period" of 1-35 days
+      Full daily backup: RDS takes a full daily backup or snapshot and also stores transaction logs throughout the day.
+      The recovery process: When you do a recovery, AWS will first choose the most recent daily backup and then apply transaction logs to that day, up to the recovery point.
+
+      1. Stored in S3
+      2. Free Stroage: You get free storage space equal to the size of your database.
+      3. Defined Backup Window: During the backup window, storage I/O may be suspendd for a few seconds while the backup process intializes, and you may experience increased latency at this time.
+
+    Database Snapshots
+      Not Automated: DB Snapshtos are done manually
+      No Retention Period: Manual snapshots are nto deleted after you delete the original RDS instance, including any automated backups
+      Backup to a known state: Back up your DB instance in a known state as frequently as you wish, and then restore that specific state at any time.
+
+    Restoring your RDS Database
+      The restored version will always be a new RDS instance with a new DNS endpoint!!!
+
+    Encryption at Rest
+      Enabling Encryption: Enable encryption at creation time by selecting the encryption option in the console.
+      Integrated with KMS: Enryption is done using the AWS Key Management Service (KMS) service. AES-256 encryption.
+      Includes all DB storage: Includes the underlying storage, automated backups, snapshots, and read replicas. 
+      You can't enable encryption on an unencrypted RDS DB instance
+
+      If you have an unencrypted DB that you want to encrypt:
+        1. Take a snapshot
+        2. Create an encrypted snapshot
+        3. Restore that snapshot to an encrypted DB
+
+    Backups vs Snapshots Exam Tips
+      Automated backups
+        Automated by default
+        Daily backup, consisting of a point in time snapshot plus transaction logs
+        Retention period of 1-35 days
+        Can be used to recover your database to any point in time within the retention period
+
+      DB Snapshot
+        User-initieated, ad-hoc
+        Point in time snapshot only
+        No retention period, stored indefinitely.
+        Used to back up your DB instance to a known state and restore to that specific state at any point in time
+
+      RDS Encryption
+        Enable at Creation, applies to all underlying storage
+        KMS Integration, AES-256 encryption
+        Existing RDS instances: Take a snapshot, encrypt snapshot, create new rds instance from the encrypted snapshot
+
+Introducing Systems Manager Parameter Store
+  You need a way to store parameters used by your applications. For example, license keys, database connection information, username/passwords
+  This information needs to be passed to your EC2 instances as a bootstrap script
+  You need to maintain the confdienctiality of the information and avoid hard coding parameters in your code
+
+  Store Confidential information
+  Plain Text or Encrypted (using KMS)
+  Reference your parameters using the paramter name
+  Integrated with AWS Services (EC2, CloudFormation, Lmabda, CodeBuild, CodePipeline and CodeDeploy)
+
+Elasticache 101
+  What is Elasticache?
+    See above.
+
+  Amazon ElastiCache can be used to significantly improve latency and throughput for many read-heavy application workloads or compute-intensive workloads.
+
+  Caching improves applicaiton performance by storing critical pieces of data in memory for low-latency access. 
+  Cached information may include the results of I/O-intensive database queries or the results of computationally intensive calculations
+
+  Types of Elasticache
+    Memcahed: A widely adopted memory object caching system. Elasticache is protocol compliant with memcached, so popular tools that you use today with existing memcached environments will work seamlessly with the service.
+    Redis: A popular open-source in-memory key-value store that supports data structures such as sorted sets and lists.
+            Elasticache supports master/slave replication and multi-az which can e used to achieve cross AZ redundancy.
+
+  Be sure to look at Redis vs Memcached use cases, strengths and weaknesses.
+    
+AWS CLI Pagination
+  You can control the number of items included in the output whne you run a CLI command.
+  By default, the AWS CLI uses a page size of 1000
+  --page-size
+  --max-items
+
+EC2 Summary
+  EC2 is like a VM that is hosted in AWS instead of your data center
+    Select the capacity that you need right now
+    Grow and shrink when you need
+    Pay for waht you use
+    Wait minutes, not months
+
+  EC2 Instance Pricing Option
+    On Demand: Pay by the hour or second depending on thhe type of instance you run. Great for flexibility.
+    Reserved: Reserve capacity for one or three years. Up to 72% discount on the hourly charge. Great if you have known, fixed requirements.
+    Spot: Purchase unused capacity at a discount of up to 90%. Prices fluctuate with supply and demand. Great for applications with flexible start and end times.
+    Dedicated: A physical EC2 server dedicated for your use. Great if you have server-bound licenses to reuse or complicance requirements.
+
+    Instance Type Determinse the hardware
+      Each instance type offers different compute, memory, and storage capabilities. These types are grouped in instance families.
+      Select an instance type based on the requirements of your application.
+
+    Creating an EBS Volumes
+      Highly avaialabe and scalabe storage volumes you can attach to an EC2 instance
+      Elastic Block Store - SSD Volumes
+        GP2: General Purpose SSD, suitable for boot disks and general applications. Up to 16000 IOPS per volume, up to 99.9% durability.
+        IO1: Provisioned IOPS ssd, suitable for OLTP and latency-sensitive applications. 50IOPS/GiB. Up to 64000 IOPS per volume. High performance. More expensive than gp2, up to 99.9% durability
+        IO2: Provisioned IOPS SSD, latest generation provisioned IOPS volume. Suitable for OLTP and latency sensitive applications. 500 IOPS/GIB, up to 64000 IOPS per volume. 99.999% durability
+
+      Elastic Block Store - HDD Volumes
+        ST1: Throughput optimized HDD, sutiable for big data, data warehouses, ETL. Max throughput is 500 MB/s per volume. Cannot be a boot volume. Up to 99.9% durability.
+        SC1: Cold HDD, max throughput of 250 MB/s per volume. Less-frequently accessed data. Cannot be a boot volume. Lowest cost, up to 99.9% durability
+
+      EBS Snapshots:
+        A point in time copy of an EBS volume. Great for backing up EBS volumes. You can use a snapshot to create a new EBS volume
+        Encrypted Snapshots: If you create a new EBS volume from an encrypted snapshot, then you will get an encrypted volume.
+        Unencrypted Snapshot: If you create a new EBS volume from an unencrypted snapshot, then you will get an unencrypted volume.
+
+    Elastic Load Balancer
+      Application Load Balancers
+        Intelligent load balancing for HTTP/HTTPS. Routes requests to a specific web server based on the request type.
+
+      Network Load Balancers
+        Provides high-performance load balancing for TCP traffic
+
+      Classic Load Balancer
+        Legacy option that supports both HTTP/HTTPS and TCP. May still be on exam.
+
+      Gateway Load Balancers
+        Provides load balancing for third-party vritual applicances
+
+      X-Forwarded-For If you need the IPv4 address of your end user, look for the X-Forwarded-For HTTP header
+
+      504 error: Gateway Timeout
+        The application is not responding within the timeout period. Troublesoot your application or database server.
+
+    Route 53: Amazon's DNS service
+      Map a Domain Name
+        EC2 instance
+        Elastic Load Balancer
+        S3 Bucket
+
+      EC2 -> Elastic Load Balancer -> Hosted Zone with Alias and A record to map domain name to Application Load Balancer
+
+      Terminology
+        Hosted Zone - A container for DNS records for your domain.
+        Alias - Allows you to route traffic addressed to the zone apex, or the top fo the DNS namespace and send it to a resource within AWS such as an Elastic Load Balancer
+        A Record - Allows you to route traffic to a resource such as a web server using an IPv4 address
+
+    AWS CLI
+      Least Privilege: Always give your users the minimum amount of access required to do their job
+      Use Groups: Create IAM groups and assign your users to groups
+      Group permissions are assigned using IAM policy documents
+      Users will automatically inherit the permissions of the group.
+
+      Secret Access Key: You will only see this once. If you lose it, you will need to delete and create a new key
+      Don't share your key pairs!
+
+      Supports Linux, Windows, MacOS
+
+    Using Roles with EC2
+      Roles can be used to give ec2 instances access to aws resources
+      Create an IAM role
+      Create an Ec2 instance, attach the role to the ec2
+
+      Preferred Option, avoid hard coding your credentials
+
+      IAM Policies are used to control a role's permissions
+
+      Immediate updates
+      Attach and detach policies without terminating the instance.
+
+    RDS
+      RDS Database Types
+        SQL Server, Oracle, MySQL, PostgreSQL, MariaDB, Amazon Aurura
+      RDS is ofr OLTP Workloads
+        Great for proessing lots of small transactions, like customer orders, banking transactions, payments, booking systems
+      Not Suitable for OLAB
+        Use Redshift for OLAP and data warehousing tasks like analzying large amounts of data, reporting, and sales forecasting
+
+      Automated Backup
+        Automated, enabled by default, you define the backup window.
+        Point in time snapshot plus transaction logs
+        Retention period of up to 35 days
+        Can be used to recover your database to any point in time within the retention period
+      Database Snapshots
+        User intitiated, ad-hoc
+        Point int ime period, stored indefinitely
+        Used to back up your db instance to a knwon state and restore to that specific state at any time
+
+      Encryption
+        Enable at Creation: Includes all underlying storage, automated backups, snapshots, etc
+        KMS Integration: Uses the AWS Key Management Service for AES-256 bit encryption
+        Existing RDS Instances: take a snapshot, encrypt the snapshot, create an encrypted instance from the snapshot
+
+      Multi-AZ
+        An exact copy of your production database in another Availability Zone
+        Used in Disaster Recovery
+        In the event of a failure, RDS will automatically failover to the standby instance
+
+      Read Replica
+        A read-only copy of your primary database in the same AZ, cross-AZ or cross-region
+        used to increase or scale read performance
+        Great for read-hevy workloads and takes the load off your primary databsae for read-only workloads
+
+      Elasticache is an in-memory cache designed to improve read perforamnce for read-heavy databases
+        Memcached
+          In-memory, key-value data store
+          Object caching is your primary global
+          You want to keep things as simple as possible
+          You don't need persistence or Multi-AZ
+          You don't need to support advanced data types or sorting.
+
+        Redis
+          In-memory, key-vlaue data store
+          You are performing data sorting and ranking
+          You have advanced data types, such as lists and hashes.
+          You need data persistence
+          You need multi-AZ 
+
+      Parameter Store
+        Store Confidential Information: Passwords, connections trings, etc
+        Plain Text or Encrypted
+        Reference your parameters using the aprameter name
+        Integrated with AWS Services
+
+Lab: Using EC2 Roles and Instance Profiles in AWS

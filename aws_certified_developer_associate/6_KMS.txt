@@ -1,0 +1,112 @@
+What is KMS?
+    AWS Key Management service
+
+    1. managed
+        Managed service that makes it easy for you to create and control the encryption keys used to encrypt your data
+    2. Integrated 
+        Seamlessly integrated with many AWS services to make encrypting data in those services as easy as checking a box
+    3. Simple
+
+When do we use KMS?
+    Whenever you are dealing with sensitive information
+
+    Sensitive data that you want to keep secret
+    Customer data
+    Financial data
+    Database Passwords 
+    Secrets
+    Credentials
+
+Integrates well with most services including:
+    S3
+    RDS
+    DynamoDB
+    Lambda
+    EBS
+    EFS
+    CloudTrail
+    Developer Tool
+
+What is a CMK?
+    Customer Master Key: Encrypt/decrpyt data up to 4KB
+    What is it used for?
+        Generate/Encrypt/Decrypt the Data Key
+
+    Data Key
+        Used to encrypt/decrypt your data
+
+    Envelop Encryption!
+
+Creating a CMK - DEMO
+    Go to IAM
+    Create users that can use and managed the key
+    Create group - MY KMS GROUP
+    Go to KMS
+    Create a Key
+        Symmetric: Single key for encrypt/decrypt
+        Assymetric: Public/Private Key pair
+
+    Advanced Options:
+        Key material origin:
+            KMS
+            External
+            Custom key store (CloudHSM)
+
+    Create an alias
+    Choose users that can use the key
+        
+CMK Summary
+    CMK Attributes
+        alias
+        creation date
+        description
+        key state
+        key material
+        stays inside kms: can never be exported
+
+KMS Exam Tips
+    Set Up CMK
+        Create alias and description
+        Give it a description
+        Choose Key material
+
+        Key Administrative permissions
+            IAM users and roles that can administer the key through the kms api
+
+        Key Usage Permissions
+            IAM users and roles that can use the key to encrpyt and decrypt data
+
+    AWS-Managed CMK: AWS-provided and aws-managed cmk. Used on your behalf with the AWS services integrated with KMS
+    Customer-managed CMK: You create, own, and managed yourself
+
+    Data Key: Encryption key that is used encrypt/decrypt large amounts of data
+
+Understanding KMS API Calls
+    Architecture Overview
+        Create EC2
+            AWS CLI
+                KeyUser
+
+        Create secret.txt
+        Use MYCMK to encrypt/decrpty
+
+        Employ key rotation as well
+
+Exploring Envelope Encryption
+    A process for encrypting your data. It applies to files > 4 KB
+
+    Encryption Process:
+    AWS KMS -> GenerateDataKey API -> Data Key (Envelope Key) -(Encrypts)> Your Data
+
+    Decryption Process:
+    Data Key + Your Data -> KMS API to Decrypt Key -> Data Key decrypts data
+
+Why Envelope Encryption?
+    Why not encrypt the data using the CMK directly?
+        Network: When you encrypt data directly with KMS it must be transferred over the network.
+
+        Performance: With Envelope ENcryption only the data key goes over the newtork, not your data.
+
+        Benefits: THe data key is used locally in your application or aws service, avoiding the need to transfer data.
+
+KMS Summary
