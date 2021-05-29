@@ -222,4 +222,144 @@ SNS - Simple Notification Services
     Pub/Sub model
     Fanout
 
+Triggering Lambda from Amazon SQS
+
+Kinesis
+  What is Kinesis?
+    A family of services which enables you to collect, process, and analyze streaming data in real-time.
+    Allows you to build custom applications for your own business needs.
+
+  Why Kinesis?
+    Kinesis is originally a Greek word, meaning movement or motion.
+    Amazon Kinesis deals with data that is in motion, or streaming data.
+
+  Streaming Data?
+    Data generated continuously by thousands of data sources, which typically send in the data records simultaneously and in small sizes (kilobytes)
+    Financial Transactions
+    Stock ProejctionExpression
+    Game data (as the gamer plays)
+    Social Media feeds
+    Location tracking data
+    IoT Sensors
+    Clickstream data
+    Log files
+
+    Often unstructured.
+
+  Four Core Services
+    Kinesis Streams: Stream data and video to allow you to build custom applications that process data in real-time
+      Data Streams and Video Streams
+
+    Kinesis Data Firehouse: Capture, transform, and load data streams into AWS data stores to enable near-real-time analytics with BI tools.
+
+    Kinesis Data Analytics: Analyze, query, and transform streamed data in real-time using standard SQL. store the results in an AWS data store.
+
+  Kinesis Data Streams
+    Producers -> Kinesis Streams (24 hours, max 7 days retention)(Broken down by shards) -> Consumers (EC2, lambda, etc)
+
+    Kinesis Shards
+      Kinesis streams are made up of shards
+      Each shard is a sequence of one or more data records and provides a fixed unit of capacity
+      Five reads per second. The max total read rate is 2 MB per second.
+      1000 writes per second. The max total write rate is 1 MB per second.
+
+    The data capacity of the stream is determined by the number of shards.
+    If the data rate increases, you can increase capacity on your stream by increasing the number of shards.
+
+    Kinesis Video Streams: Securely stream video from connected devices to AWS
+      Videos can be used for analytics and machine learning
   
+  Kinesis Data Firehose:
+    Producers -> Kinesis Firehose -> (S3 to Redshift) or Elasticsearch
+    No shards or streams, no data retention, no EC2 consumers, optional Lambda, 
+    BI Tools
+
+  Kinesis Data Analytics
+    Producers -> Kinesis Streams and Kinesis FireHose -> Kinesis Analytics to run sql on data -> Redshift, S3, Elasticsearch
+    Real-time analytics
+
+  Exam Tips
+    Understand the difference between the services
+
+    Streams: capture and store streaming video and data for real-time processing and analysis. Consumer appications process and analyze the data in real-time
+    Firehose: Capture, transform, and load data continuously into AWS data store (or other services like Datadog or Splunk). Existing BI applications and tools can be used for near real-time analysis of the stored data.
+    Analytics: Real-time analytics using standard SQL on data received by Kinesis Data Streams and Kinesis Data Firehose. Stores in the processed data in AWS data store (S3, Redshift, Elasticsearch)
+
+  Kinesis Stream Demo:
+    CloudFormation (solution deployment)    
+    EC2 (Producer and Consuemr)
+    Kinesis Data Stream (capture streaming data)
+    DynamoDB (store the data)
+
+Kinesis Shards vs Consumers
+  A Kinesis data stream is a set of shards
+  A shard is a sequence of data records in a stream, each data record has a unique sequence number
+
+  Kinesis Recap
+    The data capacity of your stream is the sum total capacity of the shards.
+    Per Shard:
+      5 read transactions, up to a max of 2 MB per second.
+      1000 write records per second, up to a max of 1MB per second
+    As your data rate increases, you increase the number of shards (resharding).
+
+  What about the consumers?
+    Kinesis Client Library runs on the consumer instances.
+    Tracks the number of shards in your stream
+    Discovers new shards when you reshard.
+
+  Kinesis Client Library
+    The KCL ensures that every shard there is a record processer
+    Manages the number of record processors relative to the number of shards & consumers.
+    If you have only one consumer, the KCL will create all the record processors on a single consumer.
+    If you have two consumers, it will load balance and ccreate half the processors on one instance and half on another.
+
+  What about scaling out the consumers?
+    With KCL, generall you should ensure that the number of instances does not exceed the number of shards (except for failure or standby puproses)
+    You never need multiple instances to handle the processing load of one shard
+    However, one worker can process multiple shards
+
+    Its fine if the number of shards exceed the number of instances
+    Don't think that just because you reshard, that you need to add more instances
+    Instead, CPU utilization is what should drive the quantity of consumer instances you have, NOT the nubmer of shards in your Kinesis stream.
+    Use an auto scaling group and base scaling decisions on CPU load on your consumers.
+
+  Exam Tips: Kinesis Shards
+    The kinesis client library (KCL) running on your consuemrs creates a record processor for each shard that is being consumed by your instance
+    If you increase the number of shards, the KCL will add more record processors on your consumers
+    CPU utilization is what you should use to drive the quantity of consumer instnaces you have, NOT the number of shards in your Kinesis stream.
+    Use an Auto Scaling group, and base scaling decisions on CPU load on your consumers
+
+Introducing Elastic Beanstalk
+  What is Elastic Beanstalk?
+    Deploy and Scale web applications without managing or provisioning EC2 instances
+    Supported Languages: Java, .NET, PHP, Node.js, Python, Ruby, Go and Docker
+    Supported Platforms: Appache http server, tomcat, Nginx, Passenger, and isi
+    Focus on writing code, not the underlying infrastructure.
+
+  Provide code to Elastic Beansltak
+  Elastic Beanstalk Handles
+    1. Infrastructure: Provisioning infrastructure, load balancing, autoscaling, and application health monitoring
+    2. Application Platform: Installation and management of the application stack, including patching and updates to your OS and application Platform
+    3. You are in control: You ahve complete administrative control of the AWS resources. No additional charges for using Elastic Beanstalk
+
+    Only pay for the resources you create!
+
+  Great for developers!
+    Focus on writing code.
+    You don't need to worry about any of the underlying infrastructure needed to run the application.
+    Get your application to market faster.
+    Fastest and simplest way to deploy your application on AWS
+
+  Exam Tips
+    Deploy and Scale: Deploys and scales your web applications, including teh web application server platform.
+    Programming Languages: Java, PHP, Python, Ruby, Go, Docker, .NET, Node.js
+    Application Servers: Appache http server, Tomcat, passenger, Puma, Nginx, and isi
+    Provisioend AWS resources: EC2, RDS, Elastic Load Balaners, Auto Scaling groups
+    Sytems Administration: OS and application server updates. Monitoring, metrics and health checks are all included.
+    Administrative Control: You can fully manage the EC2 instances for you or you can take full adminsitrative control.
+
+Deploying an application with Elastic Beanstalk - Demo
+  Overview: 
+    PHP -> Elastic Beanstalk -> Provision EC2, Apache http server, security group, load balancer and scaling group
+
+Updating Elastic Beanstalk

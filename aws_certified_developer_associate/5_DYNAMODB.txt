@@ -231,7 +231,7 @@ DynamoDB Summary:
     Enable fast queries on specific data columns
     Give you a different view of your data based on alternative partition / sort keys
     Local Secondary Indexes
-      Same partition key and idfferent sort key to your table
+      Same partition key and different sort key to your table
       Must be created when you first create your table
     Global Secondary Indexes
       Different partition key and different sort key to your table
@@ -277,3 +277,4 @@ DynamoDB Summary:
     Every AWS SDK has exponential backoff as a feature
     
     
+BatchGetItem returns the attributes of one or more items from one or more tables.

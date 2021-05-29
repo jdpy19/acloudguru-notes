@@ -110,3 +110,28 @@ Why Envelope Encryption?
         Benefits: THe data key is used locally in your application or aws service, avoiding the need to transfer data.
 
 KMS Summary
+    Set Up Customer Master Key (CMK)
+        Create alias and description, choose key material option
+    Key Adminsistrative Permissions
+        IAM users and roles that can adminnister (but not use) the key through the KMS API
+    Key Usage Permissions  
+        IAM users and roles that can use the key to encrypt and decrypt the data
+    KMS Components
+        AWS-Managed CMK: AWS-provieded and AWS-managed CMK. Used on your behalf with the AWS services integrated with KMS
+            CMKs in your account that are created, managed, and used on your behalf by an AWS service that is integrated with AWS KMS.
+        Customer-Managed CMK: You create, own and manage your self. Used to encrypt, decrypt files up to 4KB and generate the data key
+        Data Key: Encryption key that you can use to encrypt data, including large amounts of data. You can use a CMK to generate, encrypt and decrypt data keys.
+        Enevelope Encyrption: Encrypting the key that encrypts our data.
+            The CMK is used to encrypt the data key (or envelope key)
+            The data key encrypts our data.
+            Used for encyrpting anything over 4KB
+            By using envelope encryption this avoids sending all your data into KMS over the network
+
+    KMS API Calls
+        aws kms encrypt: Encrypts plaintext into ciphertext by using a customer master key.
+        aws kms decrypt: Decrypts ciphertext that was encrypted by a customer master key
+        aws kms re-encrypt: Decryptes ciphertext and then reencrypts using a CMK that you specify.
+        aws kms enable-key-rotation: Enables automatic key rotation every 365 days
+        aws kms generate-data-key: Uses the CMK to generate a data key to encrypt data using envelope encryption.
+
+    
