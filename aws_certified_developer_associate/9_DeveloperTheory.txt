@@ -70,6 +70,7 @@ CodeDeploy 101
       Green instances can be created ahead of time
       Easy to switch between old and new
       You pay for 2 environments until you terminate the old servers
+      Just redirect Load Balancer if a rollback is required, only works if old environment hasn't been terminated.
 
   CodeDeploy AppSpec File
     Configuration File: Defines the paramteres to be used during a CodeDeploy deployment
@@ -101,6 +102,28 @@ CodeDeploy 101
       Nuts and bolts of the application deployment
     Phase 3
       Re-register instances with load balancer.
+
+    BeforeBlockTraffic: Tasks you want to run on instances before they are deregistered from a Load Balancer
+    BlockTraffic: De-register instances from a load balancer
+    AfterBlockTraffic: Tasks you want to run on instances after they are de-registered from a load balancer
+
+    ApplicationStop: Gracefully stop the application
+    DownloadBundle: CodeDeploy agent copies the application revision files to a temporary location
+    BeforeInstall: Pre-installation scripts, e.g. backin up the current version, decrypting files
+    Install: Copy application revision files to final location
+    AfterInstall: Post-install scripts e.g. configuration file permissions
+    ApplicationStart: Start any services that were stopped during ApplicationStop
+    ValidateService: Run tests to validate the service
+
+    BeforeAllowTraffic: Tasks you want to run on instances before they are registered with the Load Balancer
+    AllowTraffic: Register instances with a load balancer
+    AfterAllowTraffic: Tasks you want to run on instances after they are registered with a Load Balancer
+
+  Exam Tips
+    Run Order: Lifecycle event hooks are run in a specific order known as the run order
+    In-Place Deployment: Broadly 3 phases: De-registering, installation, re-registering with a load balancer
+    Logical Flow
+
       
 CloudFormation and SAM
   Serverless Application Model (SAM)
