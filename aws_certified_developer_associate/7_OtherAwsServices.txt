@@ -363,3 +363,186 @@ Deploying an application with Elastic Beanstalk - Demo
     PHP -> Elastic Beanstalk -> Provision EC2, Apache http server, security group, load balancer and scaling group
 
 Updating Elastic Beanstalk
+  Several Options for Deployment Updates
+    All at once: Deploys to all hosts concurrently
+    Rolling: Deploys the new version in batches
+    Rolling with Additional Batch: Launches an additional batch of instances. Then deploys new version in batches
+    Immutable: Deploys the new version to a fresh group of instances before deleting the old instances.
+    Traffic Splitting: Installs the new version on a new set of instances, like an immutable deployment. Forwards a percentage of incoming traffic to the new applciation for evaluation.
+
+    All at once: 
+      Deploys to all instances simultaneously. 
+      You will experience a total outage.\
+      Not ideal for mission-critical applciations
+
+      Rolling Back: If the update fails, you need to roll back the changes by redeploying the original version to all your instances. resulting in another outage
+      Best for a development or test environment
+
+    Rolling Deployment:
+      Deploys the new version in batches
+      Each batch is taken out of service while the deployment takes place
+      No outage, but capacity will be reduced by the number of instances in a batch while deployment takes place
+      Not ideal for performance sensitive systems
+
+    Rolling with additional batch
+      Launches additional batch of instances
+      Rolling update while maintaining full capacity.
+      If updates failes, you need to perform an additional rolling update to roll back the changes
+
+    Immutable (Preferred)
+      Deployments cannot be changed. Deploy new version to fresh instances, only when they pass will the old instances be terminated.
+      Does not affect the live environment
+
+    Traffic Splitting:
+      Enables Canary Testing during deployments
+      Installs the new version on a vew set of instances just like an immutable deployment
+      Forwards a percentage of incoming client traffic to the new application version for a specified evaluation period
+      If the new instances stay healthy, Elastic Beanstalk will forward 100% of the traffic to them and terminate the old ones.
+
+    Exam Tips
+      All at Once: Involves a service interruption. Rolling back requires further all at once. Good for testing/dev environments
+      Rolling Deployment: Reduced capacity during deployment. Rolling back requires another further rolling update. Not perfomance sensitive applications.
+      Rolling with additional batch: Maintains full capacity, rolling back requires a further rolling update.
+      Immutable: Maintains full capacity, to roll back delete the new instances. Preferred option for mission critical production systems
+      Traffic Splitting: Immutable, but allows for splitting for a canary test.
+
+  Demo: 
+  
+Advanced Elastic Beanstalk
+  Customizing Your Elastic Beanstalk Environment
+    You can customize your Elastic Beanstalk environment using Elastic Beanstalk configuration files.
+
+  Configuration: 
+    Define packages to Installation
+    Create linux users and groups
+    Run shell commands
+    Enable servicess
+    Load Balancer Configuration
+  YAML or JSON
+  Constraints
+    Must have a .config extension
+    Must beinside a folder called .ebextensions
+
+  .ebextensions folder
+    Must be in the top-level directory
+    Source Control    
+
+RDS and Elastic Beanstalk
+  Integrating RDS with Elastic Beanstalk
+    Elatic Beanstalk supports two ways of integrating an RDS database with your Beanstalk environment.
+
+    Deploying RDS inside your EB environment (DEV or TEST)
+      Launch RDS within Elastic Beanstalk Console
+      Created within EB environment
+      If you terminate the environment, the database will also be terminated
+      Good option for Dev and Test deployments, not so good for prod
+    Deploying RDS outside your EB environment (PROD)
+      Launch RDS outside EB
+      Use CLI or RDS console
+      It allows you to tear down your application environment without affecting the database instances
+      This is the preferred approach for production systems
+    
+    Connecting to an outside database
+      Add an additional security group to environment's auto scaling group to allow EB to communicate with RDS
+      Provide connection string information to your application servers using Elastic Beanstalk environment properties.
+
+Other AWS Services Summary
+  SQS: Distributed message queueing systems
+    Allows us to decouple the componenets of an application so that they are independent
+    Pull based, not push based
+  
+    Standard
+      Best-effort ordering
+      Message delivered at least once
+      Occasional duplicates
+      The default queue type
+
+    FIFO
+      First in, first out: strictly preserved
+      Messages are delivered once
+      No duplicates
+      Good for banking transactions which need to happen in a strict order
+  
+    SQS Settings
+      Visibility Timeout: The amount of time that the message is invisible in the SQS queue after a reader picks up that message. Default is 30s
+        If that task takes >30s, you will need to increase the timout
+
+      Short Polling: A response is returned immediately even if no messages are in the queue. A cost per response.
+
+      Long Polling: Periodically polls the queue and only reutrns a response when a message is in the queue.
+        Most cost effective option
+
+      SQS Delay Queue: Postpone delivery of new messages
+        Delay perioud: Messages in a delay queue remain invisible for the duration of the delay period
+        Distributed applications: Large distributed applications which may need to introduce a delay in processing.
+
+      Large SQS Messages (256 KB - 2 GB)
+        Use S3 to store large SQS messages 
+        SQS Extended Client Library for Java is needed to manage them
+        AWS SDK for Java for S3 operations
+
+  SNS: Simple Notification Service
+    Multiple formats: SMS, SQS, HTTP, email
+    Push NOtifications only, not for receiving notifications
+    Pub/Sub model; consumers must subscribe to a topic
+    Fanout: Can fanout messages to a large number of recipients (multiple sqs queues, HTTP endpoints, and email addresses)
+
+  SES: Simple Email Service
+    Send and Receive emails
+    Not subscription based
+    Great for sending automated emails
+
+  SNS vs SQS
+  SNS: Messaging service, push based, push notifications
+  SQS: Messaging service, pull based, think polling the queue for messages
+
+  Kinesis:
+    Understand the difference:
+      Streams: Streams and video streams
+        Caputre and store streaming video and data for real-time processign and analysis. Consumer applications process and anallyze the data in real-time
+        
+      Firehose: Capture, transform, and load data continously into AWS data stores or other providers such as datadog or splunk. Existing BI applications and tools can be used for near real-time analysis of the stored data
+
+      Analytics: Real-time analytics using standard SQL on data received by Kinesis Data Streams and Kinesis Data Firehose. Stores the processed data in AWS data stores
+
+    Kinesis Shards: 
+      Kinesis streams are made of one or mare shards
+      Each shard is a sequence of one or more data records and provides a fixed unit of capacity
+      The dat capacity of the stream is determined by the number of shards
+      If the data rate increases, you can increase capacity on your stream by increasing the number of shards
+
+      Consuming: 
+        Kinesis Client LIbrary running on your consuemrs runs a record processor for each shard being consumed.
+        Generally the number of consuemr instances should not exceed the nuumber of shards (except for failover purposes)
+
+        An increase in the number of shards does not mean an increase in consumer. An auto scaling group should scale consumers based on their utilization.
+
+  Elastic Beanstalk
+    Deploy and Scale
+    Programming Languages: Java, PHP, Python, Ruby, Go, Docker, .NET and Node.js
+    Application Servers: Apache HTTP server, Tomcat, passenger, puma, Nginx, and isi
+    Provisioned AWS resources
+    Systems administration
+    Administrative Control: You can take full administrative control
+
+    Elastic Beanstalk Configuration files
+      YAML or JSON
+      .confix extension
+      .ebextensions directory, must be top-level
+
+    Updating an applciation
+      All at once (Dev/Test): Involves a service interruption
+      Rolling: Reduced capacity
+      Rolling with Additional Batch: Maintains full capacity
+      Immutable: (Prod) Maintains full capacity, to rollback just delete the new instances
+      Traffic Splitting: Allows you to perform canary test
+
+    RDS and EB
+      Inside (Dev/Test)
+        Quick and easy
+        When you terminate, the RDS db is also terminated
+      Outside (Prod)
+        You can tear down wihtout impacting the database
+        Additional configuration steps
+          Security Group - EC2 to RDS communication
+          Connection Infromation - Think DB connection string
