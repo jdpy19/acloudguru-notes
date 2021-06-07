@@ -60,11 +60,13 @@ CodeDeploy 101
 
   CodeDeploy Deployment Approaches
     In-Place: The application is stopped on each instance and the new release is installed. Also known as Rolling Update
+      CodeDeploy installs the new version, known as a Revision
       Capacity is reduced during the deployment
       Lambda is not supported
       Rolling back involves a re-deployment
       Great when deploying in the first time
     Blue/green: New instances are provisioned and the new release is installed on the new instances. Blue represents the active deployment, green is the new release.
+      Blue = Current, Green = New environment
       Safest option
       No capacity reduction
       Green instances can be created ahead of time
@@ -72,15 +74,29 @@ CodeDeploy 101
       You pay for 2 environments until you terminate the old servers
       Just redirect Load Balancer if a rollback is required, only works if old environment hasn't been terminated.
 
+  Exam Tips:
+    In-Place
+      Capacity is reduced during the deployment
+      Lambda is not supported
+      Rolling back involves a re-deploy
+      Great for when deploying for the first time
+    Blue/Green
+      No capacity reduction
+      Green instances can be created ahead of time
+      Easy to switch between old and new
+      You pay for 2 environments until you terminate the old servers
+
   CodeDeploy AppSpec File
     Configuration File: Defines the paramteres to be used during a CodeDeploy deployment
     EC2: For EC2 and on-prem, YAML only
     Lambda: YAML and JSON supported
 
-    Version: Reserved for future use, currently 0.0
-    OS: The operating sytem
-    Files: the location of any application files that need to be copied and where they should be copied to
-    Hooks: Scripts which need to run at set points in the deployment life cycle, have a specifc run order
+
+    EC2 AppSpec File Structure
+      Version: Reserved for future use, currently 0.0
+      OS: The operating sytem
+      Files: the location of any application files that need to be copied and where they should be copied to
+      Hooks: Scripts which need to run at set points in the deployment life cycle, have a specifc run order
 
     Script Examples:
       UZip Files: Unzip application files
@@ -124,7 +140,178 @@ CodeDeploy 101
     In-Place Deployment: Broadly 3 phases: De-registering, installation, re-registering with a load balancer
     Logical Flow
 
-      
+  CodeDeploy Demo 
+    https://github.com/ACloudGuru-Resources/course-aws-certified-developer-associate/tree/main/Code_Deploy_Demo
+    Tasks
+      Create an EC2 Instances
+      Create an S3 bucket
+      Install the CodeDeploy agent
+      Deploy an application
+
+    Prerequisites
+      Service Role for EC2: Allow EC2 to accss source code in S3
+      Service Role for CodeDeploy: Allow CodeDeploy to make API calls on our behalf
+
+CodePipeline 101
+  A Fully Managed CI/CD Service
+    Orchestrates Build, Test, & Deployment
+      The pipeline is triggered every time there is a change to your code.
+    Automated Release Process
+      Fast, consistent, fewer mistakes. Enables quick release of new features and bug fixes
+    CodePipeline Integrates with
+      CodeCommit, CodeBuild, CodeDeploy, Github, Jenkins, Elastic Beanstalk, CloudFormation, Lambda, Elastic Container Service
+  Example Workflow
+    CodePipleine: Workflow is defined. The workflow begins when there is a change detected in your source code.
+    CodeCommit: New Code Appears. New source code appears in the COdeCommit Repository
+    CodeBuild: Code is Built & tested. CodeBuild immediately compiles source code, runs tests, and produces pacakges.
+    CodeDeploy: Application Deployed. The newly built application is deployed into a staging or production environment
+  Exam Tips
+    CI/CD: Orchestrates end to end software release processes
+    Automated: Triggers your pipeline as soon as a change is detected in your source code repository
+    Integrates with AWS & Third Party Tools
+
+  Demo: https://github.com/ACloudGuru-Resources/course-aws-certified-developer-associate/tree/main/Code_Pipeline_Demo
+
+  Tasks:
+    Use CloudFormation to create an EC2 instance
+    Upload version 1 of our application to S3
+    Deploy the applicaiton using CodeDeploy
+    Build a CodePipeline and deploy version 2.
+    Configure an automated pipeline and deploy version 3
+
+  Prerequisites
+    Resources
+    Configure user permissions
+
+Setting up and AWS CodePipeline with a manual approval
+  Very cool! Could use for carkeepers
+
+Introduction to Microservices
+  Traditional applications
+    Monolithic: One single unit, think data team servers
+    Difficult to change
+    Can't make it bigger
+    One small change affects the whole thing
+
+  Microservices: An architectural and organizational approach to software development, where software is composed of small, independent services that communicate over well-defined APIs
+
+  Modern Applications:
+    Many modern applications are made up of a bunch of microservices running in containers
+
+  Container, think Docker
+
+  Example: 
+    Shopping Cart: 
+    Recommendation Engine: 
+    Product Reviews: 
+    Marketing Preferences: 
+    These can all be seperate microservices instead of one big unit.
+
+  3 Important Advantages
+    Serviceability: Easy to fix problems
+    Flexibility: Easy to make changes
+    Scalability: Easy to scale
+
+  Serviceability: 
+    If one component breaks... 
+      Not a disaster, the rest of the application keeps going
+      Quick to fix, deploy a new instance of your microservices
+
+  Flexibility:
+    Change is easy...
+      To upgrade shopping cart, simply replace microservice.
+      To add new features, simply create a new microservice.
+    
+  Scalability:
+    Scaling is easy...
+      To scale the shopping cart microservice, add more containers
+      Scale only the components that you need to, highly flexible and cost efficient
+
+  Microservices enable flexibility! Most adaptable to change survives!
+
+  A monolithic approach can be fatal! Failing to adapt as quickly as competition can be deadly.
+
+  Exam Tips
+    Microservices run in containers
+    Does one thing only
+    Easy to support and maintain
+
+Elastic Container Service 
+  https://d1.awsstatic.com/whitepapers/DevOps/running-containerized-microservices-on-aws.pdf
+  https://12factor.net/
+
+  Containers
+    What are Containers? SImilar to a virtual machine, more like a virtual operating environment
+    Standardized: A standardized unit with everything the software needs to run: libraries, system tools, code, runtime
+    Microservices: Applications are created using independent stateless components or microservices running in containers
+
+  Architecture of a Docker Container
+      [
+      Code
+      libraries
+      Virtual Kernel
+      ] * Scale these out as app grow
+    Runs on Docker
+    Installed on OS
+
+  Advantages of Containers & Microservices Architectures
+    Highly Scalable: If the application becomes over loaded, scale only the services you need to.
+    Fault Tolerant: A single error in one of your containers shouldn't bring down the entire app
+    Easy to maintain: Easier to maintain, update and change than large monolithic applications
+
+  What about ECS? 
+    A container orchestration service which supports Docker and windows containers
+      Quickly deploy and scale containerized workloads wihtout having to install, configure, manage and scale your own orchestration platform.
+      Similar to Kubernetes (k8s) but with deep integration with AWS Services
+
+  Fargate or EC2
+    Clusters of Virtual machines: ECS will run your containers on clusters of virtual machines.
+    Fargate for Serverless: Use fargate for serverless contaienrs and you don't need to worry about the underlying EC2 instances
+    EC2 For more Control: If you want to control the installation, configuration and management of your compute environment.
+
+  Elastic Container Registry: Registry of container images
+    Cool services which use ECS: 
+      Sagemaker, quickly dpeloy and scale machine learning models
+      Amazon Lex, Uses deep learning to build conversational interfaces (chatbots)
+      Aamzon.com, amazon's recommendation services uses ECS
+
+  Exam Tips
+    Containers: Virtual operating environment which contains everything the software needs to run
+      Libraries, system tools, code, runtime
+      Alows applications to be built as microservices
+    ECS: 
+      Container orchestration
+      Fargate (Serverless) or Virtual Machines (EC2)
+
+      ECR: Elastic Container Registry
+
+Docker and CodeBuild Demo
+  Docker Recap
+    Open Source technology which allows you to create applications based on either LInux or Windows contaienrs
+    Container: A lightweight standalone executable software package which includes everything the software needs to run in the CloudFormation
+  CodeBuild: 
+    A fully managed build service:
+      Runs a set of commands that you define
+      Compiles code, runs tests, and produces artificats that are ready to deploy
+    
+  Architecture Overview:
+    Docker - local
+      Dockerfile
+      buildspec.YAML
+    CodeCommit - repository for source code
+    ECS & ECR (Store images)
+
+    Manually build docker and push to ECR
+    Then, run Docker on ECS
+
+    CodeBuild will then take place of locally building the container
+
+    1. Install Docker
+    2. Create Docker Image
+
+
+
+
 CloudFormation and SAM
   Serverless Application Model (SAM)
     CloudFormation for Serverless
@@ -155,4 +342,3 @@ CloudFormation and SAM
     Enable re-use of CloudFormation code for common use cases.
       E.g. standard configuration for a load balancer, web server, or application server.
       Instead of copying out the code each time, create a standard template for each common use case and reference from within your CloudFormation template.
-
