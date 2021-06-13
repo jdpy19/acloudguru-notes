@@ -309,8 +309,51 @@ Docker and CodeBuild Demo
     1. Install Docker
     2. Create Docker Image
 
+  Exam Tips:
 
+Deploying Docker Using Elastic Beanstalk
+  Elastic Beanstalk & Docker Containers
+    Elastic Beanstalk supports the deployment of Docker Containers
+    Docker Containeras are self-contained and include all the configuration information and software your web application requires to run
+    Elastic Beanstalk handles the capacity provisioning, load balancing, scaling, and appliation health monitoring
 
+  Single Docker Container: You can either run a single docker docntianer on an EC2 instance provisioned by Elastic Beanstalk
+  Multiple Docker Containers: Use Elastic Beanstalk to build an ECS cluster and deploy multiple Docker containers on each instance
+  Deploy your code: UPpoad a zip file containing your code and EB will do the rest
+  Upgrade code: Just upload the next version of the code.
+
+Introduction to CloudFormation
+  Manage, configure, and provision your AWS infrastructure as code
+    Resources are defined using a CloudFormation template.
+    CloudFormation interprets the template and makes the appropriate API calls to create the resourcs you have defined.
+    Supports YAML or JSON
+  
+  CloudFormation Benefits
+    Consistent: INfrastructure is provisioned consistently, with fewer mistakes
+    Quick and Efficient: Less time and effort than configuring things manually.
+    Version Control: You can version contorl and peer review your templates
+    Free to Use: Free to use but you are charged for the AWS resources you create using CloudFormation
+    Manage Updates: Can be used to managed updates and dependencies
+    Rolling Back: You can roll back to a previous sstate and delete the entire stack as well.
+
+  CloudFormation Process
+    YAML or JSON: YAML or JSON template used to describe the end state of the infrastructure you are either provisioning or changing.
+    S3: After creating the template, you upload it to CloudFormation using S3.
+    API Calls: CloudFormation reads the template and makes the API calls on your behalf
+    CloudFormation Stack: The resulting set of resources that CloudFormation buidls from your template is called a "stack"
+
+  The Resource section is the only mandatory section of the template.
+  The transform section is for referencing additional code
+
+  Exam Tips
+    Infrastructure as code: YAML or JSON
+    Parameters: Input custom values
+    Conditions: Provision resources based on environment
+    Resources: mandatory, defines AWS resources
+    Mappings: Allows you to create custom mappings like REGION
+    Transform: Allows you to reference code in S3
+
+  Demo: 
 
 CloudFormation and SAM
   Serverless Application Model (SAM)
@@ -342,3 +385,109 @@ CloudFormation and SAM
     Enable re-use of CloudFormation code for common use cases.
       E.g. standard configuration for a load balancer, web server, or application server.
       Instead of copying out the code each time, create a standard template for each common use case and reference from within your CloudFormation template.
+
+Developer Theory Summary
+  CodeCommit: Source control service
+  CodeBuild: Automated build service, compiles source code and runs tests
+  CodeDeploy: Automated deployment service to EC2 and Lambda, as well as on prem
+  CodePipeline: Manage build and deploy flow
+
+  CI/CD: 
+    Continuous Integration: Merging code frequently, at least once per day
+    Continuous Delivery: automated build test and deploy: Think codebuild and codedeploy
+    Continuous Deployment: Fully automating release process, think codepipeline
+
+  Read CI/CD Whitepaper
+
+  CodeCommit: Centralized Code Repo
+    Enables collaboration
+    Version Control
+
+  CodeDeploy
+    In-Place Deployment
+      Capacity is reduced during the deployment
+      Lambda is not supported
+      Rolling back involves a re-deploy
+      Great when deploying for the first time
+    Blue-Green Deploy (Safest option)
+      NO capacity reduction
+      Green instances can be created ahead of time
+      Easy to switch between old and new
+      Pay for 2 environments, until you terminate the old version
+    
+    AppSpec File: Configuration file
+      Defines paramaters to be used by codedeploy, os, hooks
+      Must be in the root folder
+      Repo:
+        appspec.yml
+        /Scripts
+        /Config
+        /Source
+
+      Hooks: Lifecycle event hooks have a very specific run order
+        In-Place Deployment has 3 phases
+          1. De-registering with a load balancer
+          2. Installation
+          3. Re-registering with a load balancer
+        Logical Flow: Understand the flow
+
+        BeforeInstall
+        AfterInstall
+        ApplicationStart
+        ValidateService
+
+  CodePipeline
+    Continuous Integration/Continuous Delivery Service: orchestrates you end-to-end software release process based on a workflow you define.
+    Automated: Triggers you pipeline as soon as a change is detected in your source code repository.
+    Integrates with AWS & Third party tools
+
+  Elastic Container Service 
+    Containers: Virtual operating environement with everything the software needs to run
+
+    ECS: Can run your containers on clusters of virtual machines
+    Fargate: Serverlessly, run containers
+    EC2: More control
+    ECR: Elastic container registry, store your containers
+
+    Docker COmmands: 
+      docker build -t NAME .
+      docker tag myimagename:latest ..tag..
+      docker push ..tag..
+
+  CodeBuild:
+    Use buildspec.yml to define the build commands and setting used by CodeBuild to run your build
+    You can overrie settings by adding your own commands in the console.
+    Troubleshooting Failurse: Check codebuild logs
+
+  Elastic Beanstalk and Docker:
+    EC2: You can deploy to a single EC2 instance
+    ECS Cluster: You can deploy multiple Docker instances to an ECS cluster
+    Deploying Docker: Just upload code bundle to Elastic Beanstalk
+    Upgrading: Just upload and deploy your new version
+    Local Machine or S3 can be used to upload code
+    CodeCommit: You can also use code commit
+
+  CloudFormation:
+    Infrastructure as Code: YAML or JSON code
+    Parameters: Allows you to input cusotm values
+    Conditions: Allows you to provision resources according to the environment
+    Resources (Mandatory): Describes AWS resources
+    Mappings: Allows you to create custom mappings like Region
+    Transform: Reference code located in S3 
+
+  Serverless Application Model:
+    Used to define and provision serverless applications using CloudFormation
+
+    sam package: Packages your application and uploads to S3
+    sam deploy: Deploy your application using CloudFormation
+
+  CloudFormation Nested Stacks:
+    NEsted stacks allows you to re-use your CloudFormation code so you don't need to copy / paste every time
+
+    Common use cases: Really useful for frequently used configurations: load balancers, web or application servers
+
+    Stack Resource Type: Reference it in the Resources section of the CloudFormation template using the Stack resource type
+
+  
+
+

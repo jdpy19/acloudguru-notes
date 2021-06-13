@@ -1,0 +1,56 @@
+Web Identity Federation
+  Simplifies authentication and authorization for web applications
+
+  User Access to AWS Resources: Users access AWS resources after successfully authenticating with a web-based identity provider like Facebook, Amazon, or Google
+  Authentication: Following successful authentication users receive an authentication code from the web ID provider
+  Authorization: Users can trade this authentication code for temporary AWS Secruity credentials, authorizing access to AWS resources.
+
+  Web ID Federation with Amazon Cognito
+    Amazon Cognito: Provides web ID federation including sign-up and sign-in functionality for your applications and access for guest users
+    Identity Broker: Manages authentication between your application and web ID providers, so you don't need to write any additional code.
+    Multipler Devices: Synchornizes user data for multiple devices. 
+    Recommended for Mobile: Recommended for all mobile applications that call AWS services.
+
+  Amazon Cognito Use Case:
+    Web Identity federation using social media accounts like facebook
+
+  Authentication with Amazon Cognito
+    Temporary Credentials: Cognito borkers between the app and Facebook, Amazon or Google to provide temporary credentials
+    IAM Role: The temporary credentials map to an IAM role, allowing access to the required resources.
+    Secure and Seamless: No need for the aplication to embed or store AWS credentials locally on the device.
+    Cognito gives users a seamless experience across all devices
+
+  Cognito User Pools and Identity Pools
+    User Pools: User directories used to manage sign-up and sign-in functionality for mobile and web applications
+    Sign-In: Users can sign-in directly to the User Pool or using Facebook, Amazon, or Google
+    Identity Pools: Identity pools enable you to provide temporary AWS credentials. Enabling access to AWS services like S3 or dynamoDB
+
+  Amazon Cognito User Pool and Identity Pool Workflow
+    Facebook <-> user pool <-> JWT token <-> AWS Credentials through Identity POol
+
+  Cognito Push Synchronization: Synchronization across devices
+    Devices: Cognito tracks the association between user identity and the various different devices they sign-in from.
+    Seamless: Cognito uses push synchronization to push updates and synchronize user data across multiple devices.
+    SNS silent notification: SNS notification to all the devices associated with a given user identity whenver data stored in the cloud changes.
+
+  User Pools: 
+    User directories used to manage sign up and sign in functionality for mobile and web applications
+
+  Identity Pools:
+    Identity pools enable you to provide temporary AWS credentials
+    Enabling access to AWS services
+
+  Cognito Push Synchronization uses SNS to send a silent push notificaiton of user data updates to multiple devices associated with a single user ID.
+
+  Cognito User Pool Demo - Do this for carkeepers and Auribus
+    Create a cognito user pool
+    Configure sign-up and sign-in 
+    Sign up a user
+    View the JWT token
+
+  Cognito Identity Demo
+    Create an IAM user
+    Create a dynamoDB table
+    Create an ec2 instance
+    Create a cognito identity pool and IAM role
+    Configure our website
