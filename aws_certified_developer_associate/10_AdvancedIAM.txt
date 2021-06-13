@@ -54,3 +54,5 @@ Web Identity Federation
     Create an ec2 instance
     Create a cognito identity pool and IAM role
     Configure our website
+
+Inline, AWS Managed, and Customer Managed Policies
