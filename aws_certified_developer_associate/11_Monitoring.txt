@@ -1,0 +1,95 @@
+Introduction to CloudWatch
+  Amazon CloudWatch is a monitoring service to monitor the health and performance of your AWS resources, as well as the applications that you run on AWS, and in your own datacenter.
+
+  What can CloudWatch monitor? Pretty, much everything
+    Compute:
+      EC2 Instances
+      Autoscaling groups
+      Elastic Load Balancers
+      Route53 Health Checks
+      Lambda
+
+    Storage and Content Delivery
+      EBS Volumes
+      Storage Gateway
+      CloudFront
+
+    Databases and Analytics
+      DynamoDB tables
+      ElastiCache nodes
+      RDS Instances
+      Redshift
+      Elastic Map Reduce
+
+    other
+      SNS Topics
+      SQS Queues
+      API Gateway
+      Estimated AWS charges
+
+  The CloudWatch agent: define your own metrics
+
+  CloudWatch Logs allows you to monitor operating systems and logs
+
+  CloudWatch and EC2: All EC2 instances send key health and performance metrics to CloudWatch
+    Default EC2 host-level metrics consist of CPU, network, disk, and status check.
+    Metrics are stored indefinitely
+    You can retrieve data from an EC2 or Elastic Load Balancer after the instance has been terminated.
+
+  Operating System - Level Metrics
+    By Default: EC2 does not send operating system-level metrics to CloudWatch
+    CloudWatch Agent: BY installing the CloudWatch agent on your EC2 instances, you cna collect operating system metrics and send them to CloudWatch
+    Operating System Metrics; Memory usage, processes running on your instance, amount of freee disk space, CPU idle time, etc.
+
+  How frequently does ec2 send metrics to cloudwatch?
+    Metric Frequency: By default, 5 minute intervals
+      For additional charge, you can enable detailed monitoring at 1 minute intervals
+
+      For custom metrics, the default is 1 minute intervals and you can configure 1 second interval for additional charages
+
+  Monitoring System and Application Logs
+    Monitor Log Files: Monitor and troubleshoot your applications using existing system and application log Files
+    Customize For Your Application: Monitor your logs in near-real time for specific phrases, values or patterns.
+      Requires the CloudWatch agent
+
+    Use Case: Track the number of errors that occur in your application log and send yourself a notification whenever the rate of errors exceeds a threshold you specify.
+
+  CloudWatch Alarms: You can create an alarm to monitor any Amazon CloudWatch metric in your account
+    Alarms: This can include EC2 cpu utilization, Elastic Load Balancer latency, or even the charges on your bill.
+    Thresholds: YOu can set appropriate thresholds to trigger the alarms and actions to be taken if an alarm state is reached.
+    Use Case: You can set an alarm that send you a notificaiton or executes an Auto Scaling policy if CPU utilization exceeds 90% on your EC2 instance for more than 5 minutes.
+
+  Exam Tips:
+    CloudWatch is all about monitoring the performance and health of your systems.
+    
+    Default EC2 host-level metrics: CPU, network, disk, and status check.
+
+    Use the CLoudWatch agent for operating system-level metrics like memory usage, processes and CPU idle time.
+
+    CloudWatch Logs: Monitor and store your lgos to help you better understand your systems and applications
+    CloudWatch Alarms: You can create an alarm to monitor any Amazon CloudWatch metric in your account, generate an alert or take some action.
+
+  Demo:
+
+CloudWatch vs CloudTrail 
+  What is CloudTrail? Records user activity in your AWS account.
+    CloudTrail records events related to creation, modification, or deletion of resources.
+    By default, you can view the last 90 days of account activity
+
+  When to use CloudWatch and CloudTrail?
+    CloudWatch:
+      Perfmance and metrics
+      CloudWatch Logs
+      CloudWatch Alarms
+
+    CloudTrail:
+      Records API calls for your AWS account
+      Delivers log files containing API calls to an S3 bucket.
+      Can be integrated with CloudWatch Logs
+
+    Understand The Difference!
+      Do you need to monitor the performance and health of AWS resources? CloudWatch
+      Do you need an audit log of your AWS account? CloudTrail
+
+  Lab:
+    

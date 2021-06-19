@@ -56,3 +56,69 @@ Web Identity Federation
     Configure our website
 
 Inline, AWS Managed, and Customer Managed Policies
+  Identity Access Management: Used to define user access permissions within AWS
+    AWS Managed Policies: An IAM policy that is administered by AWS, common use cases
+    Customer Managed Policies: 
+      Created by you
+      Copy an existing policy
+    Inline Policies
+      1:1 Relationship between entity and the policy
+      Embedded: When you delete the user, the policy will also be deleted
+      Single User, Group or Role
+
+      AWS recommends using managed policies over inline policies
+
+  Demo: 
+
+STS AssumeRoleWithWebIdentity
+  STS API: assume-role-with-web-identity is an API provided by STS (Security token service)
+  Temporary Credentials: Returns temporary security credentials for users authenticated by a mobile or web application using a web ID provider like Amazon, Facebook, etc.
+  Web Applications: Regular web applications can use the assume-role-with-web-identity API. For mobile apps, Cognito is recommended.
+
+  Exam Tips:
+    STS: Part of the Security Token service
+    Authentication: Allows users who ahve authenticated with a web identity provider to access AWS resources.
+    API Call: After the user has authenticated, the application makes the assume-role-with-web-identity API call.
+    Temporary Credentials:
+    AssumedRoleUser: Within AssumedRoleUser, the ARN and AssumedRoleID are used to programmatically reference the temporary credentials, not an IAM role or user.
+
+Configuring Cross-Account Access
+  Delegate access to resources in different AWS accounts that you own.
+
+  Many companies have Production and Dev accounts
+
+  Manage Resources in other accounts: Share resources in one account with users in a different account.
+  IAM Role: Create a role in one account to allow access and grant permissions to users in a different account
+  Switch Roles within the AWs management console. No password is required.
+
+Advanced IAM Summary:
+  STS: Part of the Security Token service
+  Authentication: Allows users who have authenticated with a web identity provider to access AWS Resources
+  API Call: After the user has authenticated, the application makes the assume-role-with-web-identity API call.
+  Temporary Credentials: If successful, STS will return temporary credentials enabling access to AWS resources
+  AssumedRoleUser: Within AssumedRoleUser, the arn and AssumedRoleID are used to programmatically reference the temporary credentials, not an IAM role or user.
+
+  Cognito
+    Cognito: Acts as an identity broker, handling all interaction with web identity providers.
+    User Sign-UP: Provides sign-up, sign-in, and guest user access.
+    Best Practice for Mobile Apps: Cognito is the AWS recommended approach for web ID federation for mobile applications.
+
+    Cognito Push Synchronization uses SNS to send a silent push notification of user data updates to multiple devices associated with a single user ID.
+
+    User Pools:
+      User directories used to manage sign-up and sign-in functionality for mobile and web applications
+
+    Idenity Pools:
+      Identity pools enable you to provide temporary AWS credentials
+      Enabling access to AWS services like S3 or dynamoDB
+
+    Inline, AWS Managed, and Customer Managed Policies
+      AWS: Managed default policies
+      Cusomter Managed policies can be assigned to any number of entities and is managed by you.
+      Inline Policy: Managed by you and embedded in a single entity (user, group or role) [Not preferred]
+
+    Cross-Account Access
+      Create IAM group in Dev account
+      Create an S3 bucket in prod account
+      Create IAM policy in prod and attach to role
+      Associate role with dev account_id
