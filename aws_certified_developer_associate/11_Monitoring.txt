@@ -92,4 +92,27 @@ CloudWatch vs CloudTrail
       Do you need an audit log of your AWS account? CloudTrail
 
   Lab:
+
+Summary:
+  CloudWatch Exam Tips:
+    Cloudwatch is all about monitoring performance and health of systems
+    Default host-level metrics: CPU, network, disk, and status check.
+
+    Use the CloudWatch agent for operating system-level metrics like memory usage, processes and CPUT idle time.
+
+    CloudWatch Logs: Monitor and store your logs to help you better understand your systems and applications.
+
+    CloudWatch Alarms: You can create an alarm to montior any Amazon CloudWatch metric on your account
+
+  CloudWatch vs. CloudTrail
+    CloudWatch: 
+      Monitors performance and metrics
+      CloudWatch Logs
+      CloudWatch AlarmsDo you need to mointor the performance of AWS resources?
+
+    CloudTrail 
+      Records API calls fo ryour AWS account
+      API activity history related to creation, deletion, and modification of AWS resources.
+      Do you need an audit log of user activity in your AWS account?
+
     

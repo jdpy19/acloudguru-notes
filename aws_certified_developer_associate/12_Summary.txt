@@ -1,0 +1,7 @@
+Additional Resource to help you pass the exam:
+  Official AWS FAQs
+  Whitepapers
+  re:Invent Videos
+
+Summary:
+  
