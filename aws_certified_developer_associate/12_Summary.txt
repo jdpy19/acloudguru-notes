@@ -4,4 +4,37 @@ Additional Resource to help you pass the exam:
   re:Invent Videos
 
 Summary:
-  
+  Areas to focus study on:
+    Monitoring and Troubleshooting
+    EBS
+    AWS WAF, Kinesis Data Firehose
+    VPC flow log with CloudWatch Logs
+    Exponential Backoff
+    ECS Definition
+    Elastic Beanstalk Deployment Pro/cons
+    Install X-ray daemon
+    End-to-end encryption between ELB and EC2
+    Encryption between EC2 and ALB
+    Viewer Protocol Policy
+    AWS Encryption SDK
+    Parameter Store
+    Dynamic Port Mappings
+    AWS Secrets Manager vs KMS
+    DynamoDB tables are encrypted at rest with an AWS owned key by default
+    Invalidate file from the CloudFront edge cache
+
+    SQS delay queue vs FIFO queue
+
+    DynamoDB: condition-expression in the UpdateItem
+
+    EC2:
+      Private and public IP: curl or get to access the instance metadata
+
+    S3: 
+      Multipart upload for files larger than 100MB
+      Maximum file size is 5TB
+      Maximum single object PUT is 5 GB
+
+    CloudWatch:
+      High-resolution custom metric for 10 second intervals
+
