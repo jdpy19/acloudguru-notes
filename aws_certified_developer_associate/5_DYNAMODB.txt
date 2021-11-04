@@ -82,7 +82,7 @@ Scan vs Query API Call
     Use an optional sort key name and value to refine the results
     By default, a query returns all the attributes for the items, but
     you can use the ProjectionExpression parameter if you want the query to only return the specific
-    attributes you want.
+    attributes you want.f
 
     Results are always sorted by the sort key, numeric order ascending
 
@@ -252,7 +252,7 @@ DynamoDB Summary:
   ProviseionedThroughput: Provisioned throughput is measured in capacity units
     Write Capacity Units: 1x1KB write per second
     Strongly Consistent Reads: 1x4KB read per second
-    Eventually Consistent REads: 2x4KB reads per second
+    Eventually Consistent REads: 1/2x4KB reads per second
   On Demand Capacity:
     Know when to use each pricing model
     On-Demand Capacity: Unpredictable traffic, pay per use model
